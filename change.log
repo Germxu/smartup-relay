@@ -1,6 +1,13 @@
 {
 	"log": [
 		{
+			"ver":"7.2.622.1170 (beta)",
+			"date":"2024.06.04",
+			"content":[
+				"New: Relay from smartUp"
+			]
+		},
+		{
 			"ver":"7.2.622.1170",
 			"date":"2023.04.06",
 			"content":[
@@ -85,7 +92,7 @@
 			"date":"2021.03.03",
 			"content":[
 				"fix bugs: issues@github: #131, #129"
-			]	
+			]
 		},
 		{
 			"ver":"6.7.141.1102",
@@ -97,7 +104,7 @@
 				"submit to microsoft edge #90",
 				"upgrade purify.js",
 				"fix bugs: issues@github: #97, #87, #63"
-			]	
+			]
 		},
 		{
 			"ver":"6.6.262.1048",
@@ -181,7 +188,7 @@
 				"new option: about>Support Developer>Show advertisement",
 				"fix bugs: button for general>custom scripts disappear, issues@github: #40,#37 and others."
 			]
-		},	
+		},
 		{
 			"ver":"6.1.1108.837",
 			"date":"2018.08.18",
@@ -287,7 +294,7 @@
 			"content":[
 				"new action: save link",
 				"fixed bugs"
-			]	
+			]
 		},
 		{
 			"ver":"5.1.1240.747",
@@ -296,7 +303,7 @@
 				"new actions: Go Upper Level,increment/decrement url,disable in current tab temporarily",
 				"new options for action: close tab",
 				"fixed bug: when adding new action of super drag, cant drag the text; export/import config error in firefox; rocker gestures be triggered error"
-			]	
+			]
 		},
 		{
 			"ver":"5.0.868.727",
@@ -305,7 +312,7 @@
 				"new option: Disable drag, when the dragged element was set as draggable",
 				"fixed bug: Switch to Previous Tab can't work; when enable show next possible action, the UI display wrong",
 				"improve translation and UI"
-			]	
+			]
 		},
 		{
 			"ver":"5.0.737.715",
