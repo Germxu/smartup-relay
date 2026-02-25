@@ -690,7 +690,7 @@ var suo={
 			_li.appendChild(_title);
 			var _direct=suo.domCreate2("span",null,null,"background-color:#d0d9ff; display:inline-block; border-radius:20px;padding:4px 8px 2px 8px;");
 			for(var j=0;j<confOBJ[i].direct.length;j++){
-				var _img=suo.domCreate2("img",{setName:["className","src"],setValue:["item_edit",chrome.extension.getURL("")+"image/"+"direct.png"]},null,"height:24px;"+suo.directimg(confOBJ[i].direct[j]));
+				var _img=suo.domCreate2("img",{setName:["className","src"],setValue:["item_edit",chrome.runtime.getURL("")+"image/"+"direct.png"]},null,"height:24px;"+suo.directimg(confOBJ[i].direct[j]));
 				_direct.appendChild(_img);
 			}
 			_li.appendChild(_direct);
@@ -1740,7 +1740,7 @@ var suo={
 				var liName=suo.domCreate2("span",{setName:["className"],setValue:["item_name item_edit"]},null,"width:160px;",{setName:["confid","actiontype"],setValue:[i,actionType]},(confOBJ[i].mydes&&confOBJ[i].mydes.type&&confOBJ[i].mydes.value)?confOBJ[i].mydes.value:suo.getI18n(confOBJ[i].name));
 				var liDirbox=suo.domCreate2("span",{setName:["className"],setValue:["item_sdrgdir item_edit"]}); 
 				var liimg=suo.domCreate2("span",{setName:["className"],setValue:["item_edit"]});
-					liimg.style.cssText+="background:url("+chrome.extension.getURL("")+"image/"+"direct.png"+") #d0d9ff center no-repeat;color:#d0d9ff;display:inline-block;width:40px;height:40px;"+suo.directimg(confOBJ[i].direct);
+					liimg.style.cssText+="background:url("+chrome.runtime.getURL("")+"image/"+"direct.png"+") #d0d9ff center no-repeat;color:#d0d9ff;display:inline-block;width:40px;height:40px;"+suo.directimg(confOBJ[i].direct);
 					liDirbox.appendChild(liimg);
 				liOBJ.appendChild(liName);
 				liOBJ.appendChild(liDirbox);

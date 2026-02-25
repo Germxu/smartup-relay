@@ -18,3 +18,6 @@ if(browserType!="cr"){
 	chrome=browser;
 	chrome.storage.sync=chrome.storage.local;
 }
+if(!chrome.browserAction&&chrome.action){
+	chrome.browserAction=chrome.action;
+}

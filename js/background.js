@@ -1,3 +1,131 @@
+try {
+	importScripts("purify.js", "gbk.js");
+} catch (e) { }
+
+if (!chrome.browserAction && chrome.action) {
+	chrome.browserAction = chrome.action;
+}
+
+if (typeof globalThis.window === "undefined") {
+	globalThis.window = globalThis;
+}
+
+if (typeof globalThis.localStorage === "undefined") {
+	const LS_KEY = "__smartup_local_storage__";
+	let lsCache = {};
+	chrome.storage.local.get([ LS_KEY ], function (items) {
+		lsCache = items[ LS_KEY ] || {};
+	});
+	globalThis.localStorage = {
+		getItem: function (key) {
+			return Object.prototype.hasOwnProperty.call(lsCache, key) ? lsCache[ key ] : null;
+		},
+		setItem: function (key, value) {
+			lsCache[ key ] = String(value);
+			chrome.storage.local.set({ [ LS_KEY ]: lsCache });
+		},
+		removeItem: function (key) {
+			delete lsCache[ key ];
+			chrome.storage.local.set({ [ LS_KEY ]: lsCache });
+		}
+	};
+}
+
+if (!chrome.tabs.executeScript && chrome.scripting) {
+	chrome.tabs.executeScript = function (tabIdOrDetails, detailsOrCallback, callback) {
+		let tabId = null, details = null, cb = null;
+		if (typeof tabIdOrDetails === "number") {
+			tabId = tabIdOrDetails;
+			details = detailsOrCallback || {};
+			cb = callback;
+		} else {
+			details = tabIdOrDetails || {};
+			cb = detailsOrCallback;
+			tabId = details.tabId || null;
+		}
+
+		const run = function (targetTabId) {
+			const target = { tabId: targetTabId, allFrames: !!details.allFrames };
+			if (details.file) {
+				chrome.scripting.executeScript({ target, files: [ details.file ] }, function (result) {
+					cb && cb(result);
+				});
+				return;
+			}
+			if (details.code) {
+				chrome.scripting.executeScript({
+					target,
+					world: "MAIN",
+					func: function (source) {
+						try { (0, eval)(source); } catch (e) { console.error(e); }
+					},
+					args: [ details.code ]
+				}, function (result) {
+					cb && cb(result);
+				});
+				return;
+			}
+			cb && cb([]);
+		};
+
+		if (tabId) {
+			run(tabId);
+			return;
+		}
+		chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+			if (tabs && tabs[ 0 ] && tabs[ 0 ].id) {
+				run(tabs[ 0 ].id);
+			} else {
+				cb && cb([]);
+			}
+		});
+	};
+}
+
+if (!chrome.tabs.insertCSS && chrome.scripting) {
+	chrome.tabs.insertCSS = function (tabIdOrDetails, detailsOrCallback, callback) {
+		let tabId = null, details = null, cb = null;
+		if (typeof tabIdOrDetails === "number") {
+			tabId = tabIdOrDetails;
+			details = detailsOrCallback || {};
+			cb = callback;
+		} else {
+			details = tabIdOrDetails || {};
+			cb = detailsOrCallback;
+			tabId = details.tabId || null;
+		}
+
+		const run = function (targetTabId) {
+			const target = { tabId: targetTabId, allFrames: !!details.allFrames };
+			if (details.file) {
+				chrome.scripting.insertCSS({ target, files: [ details.file ] }, function () {
+					cb && cb();
+				});
+				return;
+			}
+			if (details.code) {
+				chrome.scripting.insertCSS({ target, css: details.code }, function () {
+					cb && cb();
+				});
+				return;
+			}
+			cb && cb();
+		};
+
+		if (tabId) {
+			run(tabId);
+			return;
+		}
+		chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+			if (tabs && tabs[ 0 ] && tabs[ 0 ].id) {
+				run(tabs[ 0 ].id);
+			} else {
+				cb && cb();
+			}
+		});
+	};
+}
+
 Array.prototype.contains=function (ele) {
     for (var i=0;i<this.length;i++){
         if (this[i]==ele){
