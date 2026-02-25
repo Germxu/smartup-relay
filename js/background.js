@@ -44,10 +44,25 @@ if (!chrome.tabs.executeScript && chrome.scripting) {
 			tabId = details.tabId || null;
 		}
 
+		const isInjectableTab = function (tab) {
+			if (!tab || !tab.url) { return false; }
+			const url = tab.url;
+			if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("file://")) { return true; }
+			if (url.startsWith("ftp://")) { return true; }
+			return false;
+		};
+
 		const run = function (targetTabId) {
+			chrome.tabs.get(targetTabId, function (tab) {
+				if (chrome.runtime.lastError || !isInjectableTab(tab)) {
+					chrome.runtime.lastError;
+					cb && cb([]);
+					return;
+				}
 			const target = { tabId: targetTabId, allFrames: !!details.allFrames };
 			if (details.file) {
 				chrome.scripting.executeScript({ target, files: [ details.file ] }, function (result) {
+					chrome.runtime.lastError;
 					cb && cb(result);
 				});
 				return;
@@ -61,11 +76,13 @@ if (!chrome.tabs.executeScript && chrome.scripting) {
 					},
 					args: [ details.code ]
 				}, function (result) {
+					chrome.runtime.lastError;
 					cb && cb(result);
 				});
 				return;
 			}
 			cb && cb([]);
+			});
 		};
 
 		if (tabId) {
@@ -95,21 +112,38 @@ if (!chrome.tabs.insertCSS && chrome.scripting) {
 			tabId = details.tabId || null;
 		}
 
+		const isInjectableTab = function (tab) {
+			if (!tab || !tab.url) { return false; }
+			const url = tab.url;
+			if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("file://")) { return true; }
+			if (url.startsWith("ftp://")) { return true; }
+			return false;
+		};
+
 		const run = function (targetTabId) {
+			chrome.tabs.get(targetTabId, function (tab) {
+				if (chrome.runtime.lastError || !isInjectableTab(tab)) {
+					chrome.runtime.lastError;
+					cb && cb();
+					return;
+				}
 			const target = { tabId: targetTabId, allFrames: !!details.allFrames };
 			if (details.file) {
 				chrome.scripting.insertCSS({ target, files: [ details.file ] }, function () {
+					chrome.runtime.lastError;
 					cb && cb();
 				});
 				return;
 			}
 			if (details.code) {
 				chrome.scripting.insertCSS({ target, css: details.code }, function () {
+					chrome.runtime.lastError;
 					cb && cb();
 				});
 				return;
 			}
 			cb && cb();
+			});
 		};
 
 		if (tabId) {
@@ -960,6 +994,46 @@ var getDefault={
 	}
 }
 defaultConf=getDefault.value();
+let cloneObj=function(obj){
+	return JSON.parse(JSON.stringify(obj));
+}
+let mergeMissing=function(target,defaults){
+	if(target==null||typeof target!="object"){
+		return cloneObj(defaults);
+	}
+	if(Array.isArray(defaults)){
+		return Array.isArray(target)?target:cloneObj(defaults);
+	}
+	let out=target;
+	for(let k in defaults){
+		if(!Object.prototype.hasOwnProperty.call(out,k)||out[k]===undefined||out[k]===null){
+			out[k]=cloneObj(defaults[k]);
+			continue;
+		}
+		if(typeof defaults[k]=="object"&&!Array.isArray(defaults[k])&&typeof out[k]=="object"&&!Array.isArray(out[k])){
+			out[k]=mergeMissing(out[k],defaults[k]);
+		}
+	}
+	return out;
+}
+let normalizeConfig=function(cfg){
+	cfg=mergeMissing(cfg||{},defaultConf);
+	// compatibility for legacy naming in old backups
+	if(cfg.general&&cfg.general.fnswitch){
+		cfg.general.fnswitch.fnmges=cfg.general.fnswitch.fnmges!==undefined?cfg.general.fnswitch.fnmges:(cfg.general.fnswitch.mges!==undefined?cfg.general.fnswitch.mges:true);
+		cfg.general.fnswitch.fnsdrg=cfg.general.fnswitch.fnsdrg!==undefined?cfg.general.fnswitch.fnsdrg:(cfg.general.fnswitch.sdrg!==undefined?cfg.general.fnswitch.sdrg:true);
+		cfg.general.fnswitch.fndrg=cfg.general.fnswitch.fndrg!==undefined?cfg.general.fnswitch.fndrg:(cfg.general.fnswitch.drg!==undefined?cfg.general.fnswitch.drg:false);
+		cfg.general.fnswitch.fnrges=cfg.general.fnswitch.fnrges!==undefined?cfg.general.fnswitch.fnrges:(cfg.general.fnswitch.rges!==undefined?cfg.general.fnswitch.rges:false);
+		cfg.general.fnswitch.fnwges=cfg.general.fnswitch.fnwges!==undefined?cfg.general.fnswitch.fnwges:(cfg.general.fnswitch.wges!==undefined?cfg.general.fnswitch.wges:false);
+		cfg.general.fnswitch.fnpop=cfg.general.fnswitch.fnpop!==undefined?cfg.general.fnswitch.fnpop:(cfg.general.fnswitch.pop!==undefined?cfg.general.fnswitch.pop:false);
+		cfg.general.fnswitch.fnicon=cfg.general.fnswitch.fnicon!==undefined?cfg.general.fnswitch.fnicon:(cfg.general.fnswitch.icon!==undefined?cfg.general.fnswitch.icon:false);
+		cfg.general.fnswitch.fnctm=cfg.general.fnswitch.fnctm!==undefined?cfg.general.fnswitch.fnctm:(cfg.general.fnswitch.ctm!==undefined?cfg.general.fnswitch.ctm:false);
+		cfg.general.fnswitch.fntouch=cfg.general.fnswitch.fntouch!==undefined?cfg.general.fnswitch.fntouch:(cfg.general.fnswitch.touch!==undefined?cfg.general.fnswitch.touch:false);
+		cfg.general.fnswitch.fndca=cfg.general.fnswitch.fndca!==undefined?cfg.general.fnswitch.fndca:(cfg.general.fnswitch.dca!==undefined?cfg.general.fnswitch.dca:false);
+		cfg.general.fnswitch.fnksa=cfg.general.fnswitch.fnksa!==undefined?cfg.general.fnswitch.fnksa:(cfg.general.fnswitch.ksa!==undefined?cfg.general.fnswitch.ksa:false);
+	}
+	return cfg;
+}
 let loadLocalConfig=function(){
 	chrome.storage.local.get(function(items){
 		localConfig=items.local;
@@ -997,6 +1071,7 @@ let loadConfig=function(noInit,type){
 			}else{
 				config=items;
 			}
+			config=normalizeConfig(config);
 			needInit();
 			//sub.init();
 		});
@@ -1017,6 +1092,7 @@ let loadConfig=function(noInit,type){
 					config=items.config;
 				}				
 			}
+			config=normalizeConfig(config);
 			needInit();
 			//sub.init();
 		});
@@ -1060,7 +1136,9 @@ var sub={
 		scroll:{},
 		crversion:(window.navigator.userAgent.substr(window.navigator.userAgent.indexOf("Chrome")+7,100).substr(0,window.navigator.userAgent.substr(window.navigator.userAgent.indexOf("Chrome")+7,100).indexOf(" "))),
 		permissions:{},
-		os:"win"
+		os:"win",
+		donateData:{donate:[[]],ad:[[]]},
+		reason:"update"
 	},
 	extID:chrome.runtime.id,
 	checkMouseup:function(){
@@ -3003,8 +3081,9 @@ var sub={
 	saveConf:function(noInit,sendResponse){
 		console.log("save");
 		console.log(config);
+		config=normalizeConfig(config);
 		let _isSync;
-		if(config.general.sync.autosync&&chrome.storage.sync){
+		if(config.general&&config.general.sync&&config.general.sync.autosync&&chrome.storage.sync){
 			_isSync=true;
 		}else{
 			_isSync=false;
@@ -3880,11 +3959,14 @@ var sub={
 		console.log(sendResponse);
 		sub.message=message;
 		let getConf=function(){
-			let drawType=message.drawType,
-				confType=config[drawType[0]][drawType[1]],
+			let drawType=message.drawType||[],
+				confType=config&&config[drawType[0]]?config[drawType[0]][drawType[1]]:null,
 				direct=message.direct,
 				theName="",
 				theConf="";
+			if(!confType||!Array.isArray(confType)){
+				return {name:null};
+			}
 			for(var i=0;i<confType.length;i++){
 				if(confType[i].direct==direct){
 					theName=confType[i].name;
@@ -4005,6 +4087,7 @@ var sub={
 					chrome.tabs.query({active:true,currentWindow:true},function(tabs){
 						sub.curTab=tabs[0];
 						chrome.tabs.sendMessage(tabs[0].id,{type:"pop"},function(response){
+							if(chrome.runtime.lastError){ return; }
 							if(response&&response.type=="action_pop"){
 								sub.message=response;
 								sub.extID=chrome.runtime.id?chrome.runtime.id:null;
@@ -4064,8 +4147,9 @@ var sub={
 					_sendConf.note=sub.theConf.note;
 					_sendConf.allaction=[];
 				//get all actions
-				let _confType=config[message.drawType[0]][message.drawType[1]];
-				if(config[sub.message.drawType[0]].ui.allaction.enable){
+				let _confType=config&&message.drawType&&config[message.drawType[0]]?config[message.drawType[0]][message.drawType[1]]:null;
+				let _uiConf=config&&sub.message.drawType&&config[sub.message.drawType[0]]?config[sub.message.drawType[0]].ui:null;
+				if(_uiConf&&_uiConf.allaction&&_uiConf.allaction.enable&&Array.isArray(_confType)){
 					for(let i=0;i<_confType.length;i++){
 						if(_confType[i].direct.indexOf(message.direct)==0
 							&&_confType[i].direct.length>message.direct.length){
@@ -4096,6 +4180,7 @@ var sub={
 						sub.theConf.paste=domCB.value;
 						sub.theConf.typeAction="paste";
 						chrome.tabs.sendMessage(sender.tab.id,{type:"actionPaste",value:sub.theConf},function(response){
+							chrome.runtime.lastError;
 							domCB.remove();
 						});
 					});
@@ -4119,6 +4204,7 @@ var sub={
 						sub.theConf.paste=domCB.value;
 						sub.theConf.typeAction="paste";
 						chrome.tabs.sendMessage(sender.tab.id,{type:"actionPaste",value:sub.theConf},function(response){
+							chrome.runtime.lastError;
 							domCB.remove();
 						});
 					});
@@ -4792,6 +4878,7 @@ chrome.browserAction.onClicked.addListener(function(tab){
 		chrome.tabs.query({active:true,currentWindow:true},function(tabs){
 			sub.curTab=tabs[0];
 			chrome.tabs.sendMessage(tabs[0].id,{type:"icon"},function(response){
+				if(chrome.runtime.lastError){ return; }
 				if(response&&response.type=="action_icon"){
 					sub.message=response;
 					sub.extID=chrome.runtime.id?chrome.runtime.id:null;
@@ -4817,13 +4904,6 @@ if(!chrome.runtime.onInstalled){}
 else{
 	chrome.runtime.onInstalled.addListener(function(details){
 		console.log(details.reason);
-		chrome.windows.getAll({populate:true},function(windows){
-			for(var i=0;i<windows.length;i++){
-				for(var ii=0;ii<windows[i].tabs.length;ii++){
-					chrome.tabs.executeScript(windows[i].tabs[ii].id,{file:"js/event.js",runAt:"document_start",allFrames:true})
-				}
-			}
-		})
 		sub.cons.reason=details.reason;
 		switch(details.reason){
 			case"update":
@@ -4901,6 +4981,7 @@ chrome.tabs.onUpdated.addListener(function(tabId,changeInfo,tab){
 	sub.setIcon("normal",tabId,changeInfo,tab);
 	if(changeInfo.status=="complete"){
 		chrome.tabs.sendMessage(tabId,{type:"status"},function(response){
+			if(chrome.runtime.lastError){ return; }
 			if(!response){
 				sub.setIcon("warning",tabId,changeInfo,tab);
 			}
@@ -4926,9 +5007,11 @@ chrome.tabs.onRemoved.addListener(function(tabId){
 })
 chrome.runtime.onMessageExternal.addListener(function(message,sender,sendResponse){
 	sub.funOnMessage(message,sender,sendResponse);
+	return true;
 })
 chrome.runtime.onMessage.addListener(function(message,sender,sendResponse) {
 	sub.funOnMessage(message,sender,sendResponse);
+	return true;
 });
 chrome.runtime.onConnect.addListener(function(port) {
 	switch(port.name){
@@ -4968,27 +5051,34 @@ getDonate=()=>{
 			donate:[],
 			ad:[]
 		}
-		if(response[0]&&response[0]["on"]&&response[0].donate[0][localType]){
-			data.donate.push(response[0].donate[0][localType]);
+		let donateCfg=response&&response[0]&&response[0].donate&&response[0].donate[0]?response[0].donate[0]:null;
+		let adCfg=response&&response[1]&&response[1].ad&&response[1].ad[0]?response[1].ad[0]:null;
+		if(response&&response[0]&&response[0]["on"]&&donateCfg&&donateCfg[localType]){
+			data.donate.push(donateCfg[localType]);
 		}else{
-			if(response[0].donate[0]["default"]){
-				data.donate.push(response[0].donate[0]["default"]);
+			if(donateCfg&&donateCfg["default"]){
+				data.donate.push(donateCfg["default"]);
 			}else{
 				data.donate.length=0;
 			}
 		}
-		if(response[1]&&response[1]["on"]&&response[1].ad[0][localType]){
-			data.ad.push(response[1].ad[0][localType]);
+		if(response&&response[1]&&response[1]["on"]&&adCfg&&adCfg[localType]){
+			data.ad.push(adCfg[localType]);
 		}else{
-			if(response[1].ad[0]["default"]){
-				data.ad.push(response[1].ad[0]["default"]);
+			if(adCfg&&adCfg["default"]){
+				data.ad.push(adCfg["default"]);
 			}else{
 				data.ad.length=0;
 			}
 		}
+		if(!data.donate.length){ data.donate=[[]]; }
+		if(!data.ad.length){ data.ad=[[]]; }
 		sub.cons.donateData=data;
 		console.log(sub.cons.donateData);
 	})
+	.catch(function(){
+		sub.cons.donateData={donate:[[]],ad:[[]]};
+	});
 }
 getDonate();
 console.log("end")

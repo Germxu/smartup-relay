@@ -114,6 +114,9 @@ var sup={
 	},
 }
 chrome.runtime.sendMessage({type:"pop_getconf"},function(response){
+	if(chrome.runtime.lastError||!response){
+		return;
+	}
 	if(response){
 		console.log(response)
 		config=response.config;

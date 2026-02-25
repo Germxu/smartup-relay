@@ -3558,13 +3558,18 @@ var suo={
 	donateBox:{
 		init:function(){
 			chrome.runtime.sendMessage({type:"getDonateData"},function(response){
+				if(chrome.runtime.lastError||!response){
+					suo.cons.donateData={donate:[[]],ad:[[]]};
+					return;
+				}
 				console.log(response.value);
-				suo.cons.donateData=response.value;
+				suo.cons.donateData=response.value||{donate:[[]],ad:[[]]};
 				suo.donateBox.show();
-				suo.donateBox.dom(response.value);
+				suo.donateBox.dom(suo.cons.donateData);
 			})
 		},
 		dom:function(items){
+			items=items||{donate:[[]],ad:[[]]};
 			let domMain=document.querySelector("#donate_main"),
 				domList=document.querySelector("#donate_list"),
 				domContent=document.querySelector("#donate_content");
@@ -3640,12 +3645,16 @@ var suo={
 			for(var i=0;items.ad&&items.ad[0]&&items.ad[0].length>0&&i<items.ad[0].length;i++){
 				initDom(items.ad[0][i],_flag+i);
 			}
-			suo.donateBox.switch(document.querySelectorAll("#donate_list li")[0]);
+			let firstDonate=document.querySelectorAll("#donate_list li")[0];
+			if(firstDonate){
+				suo.donateBox.switch(firstDonate);
+			}
 
 			//if cryptocurrency show the first one
-			if(items&&items.donate&&items.donate[0][0].type=="cryptocurrency"){
+			if(items&&items.donate&&items.donate[0]&&items.donate[0][0]&&items.donate[0][0].type=="cryptocurrency"){
 				console.log("cc")
-				suo.donateBox.switchCcli(document.querySelector("#donate_content li.donate_ccli[data-id='0']"))
+				let firstCc=document.querySelector("#donate_content li.donate_ccli[data-id='0']");
+				firstCc&&suo.donateBox.switchCcli(firstCc)
 			}
 
 
@@ -3712,12 +3721,15 @@ var suo={
 	}
 }
 chrome.runtime.sendMessage({type:"opt_getconf"},function(response){
+	if(chrome.runtime.lastError||!response){
+		return;
+	}
 	console.log(response)
 	defaultConf=response.defaultConf;
 	config=response.config;
 	suo.cons.os=response.os;
 	devMode=response.devMode;
-	suo.cons.donateData=response.donateData;
+	suo.cons.donateData=response.donateData||{donate:[[]],ad:[[]]};
 	suo.cons.reason=response.reason;
 	suo.begin();
 })

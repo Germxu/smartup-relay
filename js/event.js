@@ -28,6 +28,19 @@ if(browserType!="cr"){
 
 extID=chrome.runtime.id;
 
+function safeSendMessage(message, callback) {
+	try {
+		chrome.runtime.sendMessage(extID, message, function (response) {
+			if (chrome.runtime.lastError) {
+				return;
+			}
+			callback && callback(response);
+		});
+	} catch (e) {
+		// Ignore "Extension context invalidated" after hot-reload/update.
+	}
+}
+
 var sue={
 	cons:{
 		fix_linux_value:false,
@@ -134,7 +147,7 @@ var sue={
 						wheelDelta:e.deltaY
 					}
 
-					chrome.runtime.sendMessage(extID,{type:"action_wges",sendValue:sendValue,selEle:sue.selEle})
+					safeSendMessage({type:"action_wges",sendValue:sendValue,selEle:sue.selEle})
 					// e.preventDefault();
 				}
 				break;
@@ -198,7 +211,7 @@ var sue={
 					var sendValue={
 						buttons:e.buttons
 					}
-					chrome.runtime.sendMessage(extID,{type:"action_rges",sendValue:sendValue,selEle:sue.selEle},function(response){})
+					safeSendMessage({type:"action_rges",sendValue:sendValue,selEle:sue.selEle},function(response){})
 				}
 				break;
 			case"contextmenu":
@@ -331,7 +344,7 @@ var sue={
 						){
 						break;
 					}
-					chrome.runtime.sendMessage(extID,{type:"action_dca",sendValue:sendValue,selEle:sue.selEle});
+					safeSendMessage({type:"action_dca",sendValue:sendValue,selEle:sue.selEle});
 				}	
 				break;
 		}
@@ -368,7 +381,7 @@ var sue={
 					&&key.shift==config.ksa.actions[i].shift
 					&&key.codes.toString()==config.ksa.actions[i].codes.toString()){
 						var selEle={txt:window.getSelection().toString()}
-						chrome.runtime.sendMessage(extID,{type:"action_ksa",selEle:selEle,id:i},function(response){})
+						safeSendMessage({type:"action_ksa",selEle:selEle,id:i},function(response){})
 						break;
 				}
 			}
@@ -974,7 +987,7 @@ var sue={
 	},
 	sendDir:function(dir,dirType,e){
 		var returnValue;
-		chrome.runtime.sendMessage(extID,{type:dirType,direct:dir,drawType:sue.drawType,selEle:sue.selEle},function(response){
+		safeSendMessage({type:dirType,direct:dir,drawType:sue.drawType,selEle:sue.selEle},function(response){
   			returnValue=response;
   			sue.getedConf=returnValue;
   			if(!response){return false;}
@@ -1095,7 +1108,10 @@ chrome.runtime.onMessage.addListener(function(message,sender,sendResponse) {
 			break;
 	}
 });
-chrome.runtime.sendMessage(extID,{type:"evt_getconf"},function(response){
+safeSendMessage({type:"evt_getconf"},function(response){
+	if(!response){
+		return;
+	}
 	if(response){
 		config=response.config;
 		devMode=response.devMode;
