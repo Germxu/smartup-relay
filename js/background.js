@@ -31,131 +31,116 @@ if (typeof globalThis.localStorage === "undefined") {
 	};
 }
 
-if (!chrome.tabs.executeScript && chrome.scripting) {
-	chrome.tabs.executeScript = function (tabIdOrDetails, detailsOrCallback, callback) {
-		let tabId = null, details = null, cb = null;
-		if (typeof tabIdOrDetails === "number") {
-			tabId = tabIdOrDetails;
-			details = detailsOrCallback || {};
-			cb = callback;
+function parseLegacyTabArgs(tabIdOrDetails, detailsOrCallback, callback) {
+	let tabId = null, details = null, cb = null;
+	if (typeof tabIdOrDetails === "number") {
+		tabId = tabIdOrDetails;
+		details = detailsOrCallback || {};
+		cb = callback;
+	} else {
+		details = tabIdOrDetails || {};
+		cb = detailsOrCallback;
+		tabId = details.tabId || null;
+	}
+	return { tabId: tabId, details: details, cb: cb };
+}
+
+function isInjectableUrl(url) {
+	if (!url) { return false; }
+	return url.indexOf("http://") === 0
+		|| url.indexOf("https://") === 0
+		|| url.indexOf("file://") === 0
+		|| url.indexOf("ftp://") === 0;
+}
+
+function resolveTargetTabId(tabId, onReady, onMissing) {
+	if (tabId) {
+		onReady(tabId);
+		return;
+	}
+	chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+		if (tabs && tabs[ 0 ] && tabs[ 0 ].id) {
+			onReady(tabs[ 0 ].id);
 		} else {
-			details = tabIdOrDetails || {};
-			cb = detailsOrCallback;
-			tabId = details.tabId || null;
+			onMissing && onMissing();
 		}
+	});
+}
 
-		const isInjectableTab = function (tab) {
-			if (!tab || !tab.url) { return false; }
-			const url = tab.url;
-			if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("file://")) { return true; }
-			if (url.startsWith("ftp://")) { return true; }
-			return false;
-		};
-
-		const run = function (targetTabId) {
-			chrome.tabs.get(targetTabId, function (tab) {
-				if (chrome.runtime.lastError || !isInjectableTab(tab)) {
-					chrome.runtime.lastError;
-					cb && cb([]);
-					return;
-				}
-			const target = { tabId: targetTabId, allFrames: !!details.allFrames };
-			if (details.file) {
-				chrome.scripting.executeScript({ target, files: [ details.file ] }, function (result) {
-					chrome.runtime.lastError;
-					cb && cb(result);
-				});
-				return;
-			}
-			if (details.code) {
-				chrome.scripting.executeScript({
-					target,
-					world: "MAIN",
-					func: function (source) {
-						try { (0, eval)(source); } catch (e) { console.error(e); }
-					},
-					args: [ details.code ]
-				}, function (result) {
-					chrome.runtime.lastError;
-					cb && cb(result);
-				});
-				return;
-			}
-			cb && cb([]);
-			});
-		};
-
-		if (tabId) {
-			run(tabId);
+function withInjectableTab(tabId, onReady, onBlocked) {
+	chrome.tabs.get(tabId, function (tab) {
+		if (chrome.runtime.lastError || !tab || !isInjectableUrl(tab.url)) {
+			chrome.runtime.lastError;
+			onBlocked && onBlocked();
 			return;
 		}
-		chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-			if (tabs && tabs[ 0 ] && tabs[ 0 ].id) {
-				run(tabs[ 0 ].id);
-			} else {
-				cb && cb([]);
-			}
+		onReady(tabId);
+	});
+}
+
+if (!chrome.tabs.executeScript && chrome.scripting) {
+	chrome.tabs.executeScript = function (tabIdOrDetails, detailsOrCallback, callback) {
+		const parsed = parseLegacyTabArgs(tabIdOrDetails, detailsOrCallback, callback);
+		resolveTargetTabId(parsed.tabId, function (targetTabId) {
+			withInjectableTab(targetTabId, function (safeTabId) {
+				const target = { tabId: safeTabId, allFrames: !!parsed.details.allFrames };
+				if (parsed.details.file) {
+					chrome.scripting.executeScript({ target: target, files: [ parsed.details.file ] }, function (result) {
+						chrome.runtime.lastError;
+						parsed.cb && parsed.cb(result);
+					});
+					return;
+				}
+				if (parsed.details.code) {
+					chrome.scripting.executeScript({
+						target: target,
+						world: "MAIN",
+						func: function (source) {
+							try { (0, eval)(source); } catch (e) { console.error(e); }
+						},
+						args: [ parsed.details.code ]
+					}, function (result) {
+						chrome.runtime.lastError;
+						parsed.cb && parsed.cb(result);
+					});
+					return;
+				}
+				parsed.cb && parsed.cb([]);
+			}, function () {
+				parsed.cb && parsed.cb([]);
+			});
+		}, function () {
+			parsed.cb && parsed.cb([]);
 		});
 	};
 }
 
 if (!chrome.tabs.insertCSS && chrome.scripting) {
 	chrome.tabs.insertCSS = function (tabIdOrDetails, detailsOrCallback, callback) {
-		let tabId = null, details = null, cb = null;
-		if (typeof tabIdOrDetails === "number") {
-			tabId = tabIdOrDetails;
-			details = detailsOrCallback || {};
-			cb = callback;
-		} else {
-			details = tabIdOrDetails || {};
-			cb = detailsOrCallback;
-			tabId = details.tabId || null;
-		}
-
-		const isInjectableTab = function (tab) {
-			if (!tab || !tab.url) { return false; }
-			const url = tab.url;
-			if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("file://")) { return true; }
-			if (url.startsWith("ftp://")) { return true; }
-			return false;
-		};
-
-		const run = function (targetTabId) {
-			chrome.tabs.get(targetTabId, function (tab) {
-				if (chrome.runtime.lastError || !isInjectableTab(tab)) {
-					chrome.runtime.lastError;
-					cb && cb();
+		const parsed = parseLegacyTabArgs(tabIdOrDetails, detailsOrCallback, callback);
+		resolveTargetTabId(parsed.tabId, function (targetTabId) {
+			withInjectableTab(targetTabId, function (safeTabId) {
+				const target = { tabId: safeTabId, allFrames: !!parsed.details.allFrames };
+				if (parsed.details.file) {
+					chrome.scripting.insertCSS({ target: target, files: [ parsed.details.file ] }, function () {
+						chrome.runtime.lastError;
+						parsed.cb && parsed.cb();
+					});
 					return;
 				}
-			const target = { tabId: targetTabId, allFrames: !!details.allFrames };
-			if (details.file) {
-				chrome.scripting.insertCSS({ target, files: [ details.file ] }, function () {
-					chrome.runtime.lastError;
-					cb && cb();
-				});
-				return;
-			}
-			if (details.code) {
-				chrome.scripting.insertCSS({ target, css: details.code }, function () {
-					chrome.runtime.lastError;
-					cb && cb();
-				});
-				return;
-			}
-			cb && cb();
+				if (parsed.details.code) {
+					chrome.scripting.insertCSS({ target: target, css: parsed.details.code }, function () {
+						chrome.runtime.lastError;
+						parsed.cb && parsed.cb();
+					});
+					return;
+				}
+				parsed.cb && parsed.cb();
+			}, function () {
+				parsed.cb && parsed.cb();
 			});
-		};
-
-		if (tabId) {
-			run(tabId);
-			return;
-		}
-		chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-			if (tabs && tabs[ 0 ] && tabs[ 0 ].id) {
-				run(tabs[ 0 ].id);
-			} else {
-				cb && cb();
-			}
+		}, function () {
+			parsed.cb && parsed.cb();
 		});
 	};
 }
