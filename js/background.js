@@ -4940,18 +4940,20 @@ else{
 								{title:/*chrome.i18n.getMessage*/sub.getI18n("review"),iconUrl:"image/star.svg"}
 							]
 						}
-						var xhr = new XMLHttpRequest();
-						xhr.onreadystatechange=function(){
-							if (xhr.readyState == 4){
-								var items=JSON.parse(DOMPurify.sanitize(xhr.response));
-								for(var i=0;i<items.log[0].content.length;i++){
-									notif.items.push({title:i+1+". ",message:items.log[0].content[i]});
+						fetch(chrome.runtime.getURL("change.log"))
+							.then(function(response){ return response.text(); })
+							.then(function(text){
+								var items=JSON.parse(DOMPurify.sanitize(text));
+								if(items&&items.log&&items.log[0]&&items.log[0].content){
+									for(var i=0;i<items.log[0].content.length;i++){
+										notif.items.push({title:i+1+". ",message:items.log[0].content[i]});
+									}
 								}
 								chrome.notifications.create("",notif,function(){})
-							}
-						}
-						xhr.open('GET',"../change.log", true);
-						xhr.send();
+							})
+							.catch(function(e){
+								console.log(e);
+							});
 					}
 				})
 				break;
