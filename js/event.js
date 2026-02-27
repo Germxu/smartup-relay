@@ -79,42 +79,44 @@ var sue={
 		}
 	},
 	initHandle:function(){
+		const useCapture=true;
 		if(config.general.fnswitch.fntouch){
-			document.addEventListener("touchstart",this.handleEvent,false);
-			document.addEventListener("touchmove",this.handleEvent,false);
-			document.addEventListener("touchend",this.handleEvent,false);
+			document.addEventListener("touchstart",this.handleEvent,useCapture);
+			document.addEventListener("touchmove",this.handleEvent,useCapture);
+			document.addEventListener("touchend",this.handleEvent,useCapture);
 		}
 		if(config.general.fnswitch.fnmges||config.general.fnswitch.fnrges||config.general.fnswitch.fnwges){
 			console.log("initHandle")
-			document.addEventListener("mousedown",this.handleEvent,false);
-			document.addEventListener("mouseup",this.handleEvent,false);
-			document.addEventListener("mousemove",this.handleEvent,false);
-			document.addEventListener("mouseover",this.handleEvent,false);
-			document.addEventListener("contextmenu",this.handleEvent,false);
+			document.addEventListener("mousedown",this.handleEvent,useCapture);
+			document.addEventListener("mouseup",this.handleEvent,useCapture);
+			document.addEventListener("mousemove",this.handleEvent,useCapture);
+			document.addEventListener("mouseover",this.handleEvent,useCapture);
+			document.addEventListener("contextmenu",this.handleEvent,useCapture);
 		}
 		if(config.general.fnswitch.fndrg||config.general.fnswitch.fnsdrg){
-			window.addEventListener("dragstart",this.handleEvent,false);
-			window.addEventListener("drag", this.handleEvent,false);
-			window.addEventListener("dragover",this.handleEvent,false);
-			window.addEventListener("dragend",this.handleEvent,false);
+			window.addEventListener("dragstart",this.handleEvent,useCapture);
+			window.addEventListener("drag", this.handleEvent,useCapture);
+			window.addEventListener("dragover",this.handleEvent,useCapture);
+			window.addEventListener("dragend",this.handleEvent,useCapture);
 		}
 		if(config.general.settings.esc){
-			window.addEventListener("keydown",this.handleEvent,false);
+			window.addEventListener("keydown",this.handleEvent,useCapture);
 		}
 		if(config.general.fnswitch.fnrges||config.drg.settings.clickcancel){
-			document.addEventListener("click",this.handleEvent,false);
+			document.addEventListener("click",this.handleEvent,useCapture);
 		}
 		if(config.general.fnswitch.fnwges){
-			window.addEventListener("wheel",this.handleEvent,false);
+			window.addEventListener("wheel",this.handleEvent,useCapture);
 		}
 		if(config.general.fnswitch.fndca){
-			window.addEventListener("dblclick",this.handleEvent,false);
+			window.addEventListener("dblclick",this.handleEvent,useCapture);
 		}
 	},
 	initHandle2:function(){
-		sue.document.addEventListener("mousemove",this.handleEvent,false);
-		sue.document.addEventListener("mouseover",this.handleEvent,false);
-		sue.document.addEventListener("contextmenu",this.handleEvent,false);
+		const useCapture=true;
+		sue.document.addEventListener("mousemove",this.handleEvent,useCapture);
+		sue.document.addEventListener("mouseover",this.handleEvent,useCapture);
+		sue.document.addEventListener("contextmenu",this.handleEvent,useCapture);
 	},
 	handleEvent:function(e){
 		switch(e.type){
