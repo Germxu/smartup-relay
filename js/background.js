@@ -1556,10 +1556,36 @@ var sub={
 		},
 		//group nav
 		back:function(){//chk
-			chrome.tabs.executeScript({code:"window.history.go(-1)",runAt:"document_start"},function(){})
+			const tabId=sub.curTab&&sub.curTab.id?sub.curTab.id:null;
+			if(chrome.tabs.goBack&&tabId){
+				chrome.tabs.goBack(tabId,function(){
+					if(chrome.runtime.lastError){
+						chrome.runtime.lastError;
+					}
+				});
+				return;
+			}
+			if(tabId){
+				chrome.tabs.executeScript(tabId,{code:"window.history.go(-1)",runAt:"document_start"},function(){})
+			}else{
+				chrome.tabs.executeScript({code:"window.history.go(-1)",runAt:"document_start"},function(){})
+			}
 		},
 		forward:function(){//chk
-			chrome.tabs.executeScript({code:"window.history.go(+1)",runAt:"document_start"},function(){})
+			const tabId=sub.curTab&&sub.curTab.id?sub.curTab.id:null;
+			if(chrome.tabs.goForward&&tabId){
+				chrome.tabs.goForward(tabId,function(){
+					if(chrome.runtime.lastError){
+						chrome.runtime.lastError;
+					}
+				});
+				return;
+			}
+			if(tabId){
+				chrome.tabs.executeScript(tabId,{code:"window.history.go(+1)",runAt:"document_start"},function(){})
+			}else{
+				chrome.tabs.executeScript({code:"window.history.go(+1)",runAt:"document_start"},function(){})
+			}
 		},
 		scroll:function(){
 			var _effect=sub.getConfValue("checks","n_effect"),
@@ -4961,16 +4987,37 @@ else{
 chrome.contextMenus.onClicked.addListener(function(info,tab){
 	sub.CTMclick(info,tab);
 })
+function ensureContentScript(tabId, tabInfo) {
+	if (!tabId) { return; }
+	if (tabInfo && !isInjectableUrl(tabInfo.url)) { return; }
+	chrome.tabs.sendMessage(tabId, { type: "status" }, function (response) {
+		if (!chrome.runtime.lastError && response && response.message) {
+			return;
+		}
+		chrome.runtime.lastError;
+		chrome.tabs.executeScript(tabId, { file: "js/event.js", runAt: "document_start", allFrames: true }, function () {
+			chrome.runtime.lastError;
+		});
+	});
+}
+
+function ensureContentScriptForAllTabs() {
+	chrome.tabs.query({}, function (tabs) {
+		if (chrome.runtime.lastError || !tabs) {
+			chrome.runtime.lastError;
+			return;
+		}
+		for (var i = 0; i < tabs.length; i++) {
+			ensureContentScript(tabs[i].id, tabs[i]);
+		}
+	});
+}
+
 chrome.tabs.onUpdated.addListener(function(tabId,changeInfo,tab){
 	console.log(tabId);
 	sub.setIcon("normal",tabId,changeInfo,tab);
 	if(changeInfo.status=="complete"){
-		chrome.tabs.sendMessage(tabId,{type:"status"},function(response){
-			if(chrome.runtime.lastError){ return; }
-			if(!response){
-				sub.setIcon("warning",tabId,changeInfo,tab);
-			}
-		});
+		ensureContentScript(tabId, tab);
 	}
 
 	// get factor for action zoom
@@ -4982,6 +5029,13 @@ chrome.tabs.onUpdated.addListener(function(tabId,changeInfo,tab){
 		}
 	})
 
+})
+chrome.tabs.onActivated.addListener(function(activeInfo){
+	if(!activeInfo||!activeInfo.tabId){return;}
+	chrome.tabs.get(activeInfo.tabId,function(tab){
+		if(chrome.runtime.lastError){chrome.runtime.lastError;return;}
+		ensureContentScript(activeInfo.tabId,tab);
+	});
 })
 chrome.tabs.onRemoved.addListener(function(tabId){
 	if(sub.cons.autoreload&&sub.cons.autoreload[tabId]){
@@ -4998,6 +5052,11 @@ chrome.runtime.onMessage.addListener(function(message,sender,sendResponse) {
 	sub.funOnMessage(message,sender,sendResponse);
 	return true;
 });
+if (chrome.runtime.onStartup) {
+	chrome.runtime.onStartup.addListener(function () {
+		ensureContentScriptForAllTabs();
+	});
+}
 chrome.runtime.onConnect.addListener(function(port) {
 	switch(port.name){
 		case"fn_copyimg":
@@ -5012,6 +5071,7 @@ chrome.runtime.onConnect.addListener(function(port) {
 	}
 });
 loadConfig();
+ensureContentScriptForAllTabs();
 //browsersettings
 if(chrome.browserSettings&&chrome.browserSettings.contextMenuShowEvent){
 	browser.browserSettings.contextMenuShowEvent.set({value:"mouseup"});
