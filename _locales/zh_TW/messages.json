@@ -3,7 +3,7 @@
     "message": "A customizable web browser extension that enhances productivity and efficiency through the use of mouse."
   },
   "ext_name":{
-    "message":"smartUp手勢"
+    "message":"smartUp Relay"
   },
   "ext_desb": {
     "message": "smartUp 讓你的瀏覽器使用上更便利與快速，功能包括滑鼠手勢、簡單拖曳、超級拖曳等。使用它，你將能快速地完成更多瀏覽器的操作，例如「關閉/開啟分頁」、「最小化/最大化視窗」，並且你能同時使用其他的擴充功能唷。(僅需做些變更)。 "
@@ -18,7 +18,7 @@
     "message": "反饋："
   },
   "icon_tip":{
-    "message":"smartUp Gestures can't works perfectly in this tab!"
+    "message":"smartUp Relay can't works perfectly in this tab!"
   },
   "opt_title": {
     "message": "設定"
@@ -1352,7 +1352,7 @@
   "review":{
     "message":"評分與評論"
   },
-  "perdes_browsersettings":{"message":"Because using mouse gestures on non-Windows platforms conflicts with right-click menus, ensuring a better operating experience, smartUp Gestures needs to request this permission to fix the bug (only Firefox). After getting permission, you need to restart the browser to make it works. For more information: https://developer.mozilla.org/Add-ons/WebExtensions/API/browserSettings. This page only show only one time, or set it again from: General>Linux/Mac Settings>Try to set context menu popup after mouseup."},
+  "perdes_browsersettings":{"message":"Because using mouse gestures on non-Windows platforms conflicts with right-click menus, ensuring a better operating experience, smartUp Relay needs to request this permission to fix the bug (only Firefox). After getting permission, you need to restart the browser to make it works. For more information: https://developer.mozilla.org/Add-ons/WebExtensions/API/browserSettings. This page only show only one time, or set it again from: General>Linux/Mac Settings>Try to set context menu popup after mouseup."},
   "opt_mouseup":{"message":"Try to set context menu popup after mouseup"},
   "des_mouseup":{"message":"Fix the conflict between the mouse gesture and the context menu. Only Firefox 58+. Need request permission 'browserSettings'."},
   "touch":{

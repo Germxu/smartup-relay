@@ -359,6 +359,23 @@ var sue={
 		const exclusion= regexes.some(regex => regex.test(url));
 		return type === "black" ? exclusion : !exclusion;
 	},
+	getImageUrlFromElement:(ele)=>{
+		if(!ele){return "";}
+		let imgUrl=ele.currentSrc||ele.src||"";
+		if(imgUrl){return imgUrl;}
+		const imgEle=ele.querySelector&&ele.querySelector("img");
+		if(imgEle){
+			imgUrl=imgEle.currentSrc||imgEle.src||"";
+			if(imgUrl){return imgUrl;}
+		}
+		let styleBg="";
+		try{
+			styleBg=window.getComputedStyle(ele).backgroundImage||"";
+		}catch(err){}
+		const matched=styleBg.match(/^url\(["']?(.*?)["']?\)$/i);
+		if(matched&&matched[1]){return matched[1];}
+		return "";
+	},
 	ksa:{
 		timeout:null,
 		keyArray:[],
@@ -530,7 +547,7 @@ var sue={
 		console.log("lineDrawReady");
 		console.log(e.target)
 		//disable drag ,when draggable=true
-		if(config[type].settings.draggable&&e.target.getAttribute&&(e.target.getAttribute("draggable")=="true")){return;}
+		if(type=="drg"&&config[type].settings.draggable&&e.target.getAttribute&&(e.target.getAttribute("draggable")=="true")){return;}
 		sue._lastX=e.clientX;
 		sue._lastY=e.clientY;
 		sue._startX=e.clientX;
@@ -555,9 +572,10 @@ var sue={
 					sue.drawType=[type,"t"+type];
 					break;
 				case 1:
-					if(e.target.src){
+					const imgUrl=sue.getImageUrlFromElement(e.target);
+					if(imgUrl){
 						sue.drawType=[type,"i"+type];
-						sue.selEle.img=e.target.src;
+						sue.selEle.img=imgUrl;
 					}else if(e.target.href){
 						if(config[type].settings.drgimg&&e.target.firstElementChild&&e.target.firstElementChild.nodeType==1&&e.target.firstElementChild.src){
 							sue.drawType=[type,"i"+type];

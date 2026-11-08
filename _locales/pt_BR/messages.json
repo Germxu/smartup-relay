@@ -582,7 +582,7 @@
       "message": "Problemas:"
    },
    "ext_name": {
-      "message": "smartUp Gestures"
+      "message": "smartUp Relay"
    },
    "ext_site": {
       "message": "Site:"
@@ -741,7 +741,7 @@
       "message": "Mostrar nome da ação no ícone"
    },
    "icon_tip": {
-      "message": "smartUp Gestures não podem funcionar perfeitamente nesta aba!"
+      "message": "smartUp Relay não podem funcionar perfeitamente nesta aba!"
    },
    "icon_type": {
       "message": "Escolha o tipo de trabalho:"
@@ -900,7 +900,7 @@
       "message": "Falha ao salvar as configurações. "
    },
    "msg_conferr1": {
-      "message": "SmartUp Gestures tentará reverter para as configurações anteriores."
+      "message": "smartUp Relay tentará reverter para as configurações anteriores."
    },
    "msg_confimport": {
       "message": "Erro no arquivo de configuração! "
@@ -1227,7 +1227,7 @@
       "message": "Permissões"
    },
    "perdes_browsersettings": {
-      "message": "Como o uso de gestos do mouse em plataformas não Windows entra em conflito com os menus do botão direito, garantindo uma melhor experiência operacional, o smartUp Gestures precisa solicitar essa permissão para corrigir o bug (somente Firefox). "
+      "message": "Como o uso de gestos do mouse em plataformas não Windows entra em conflito com os menus do botão direito, garantindo uma melhor experiência operacional, o smartUp Relay precisa solicitar essa permissão para corrigir o bug (somente Firefox). "
    },
    "pin": {
       "message": "Fixar aba"

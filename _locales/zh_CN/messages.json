@@ -3,7 +3,7 @@
     "message": "通过使用鼠标提高生产力和效率且可自定义的Web浏览器扩展。"
   },
   "ext_name":{
-    "message":"smartUp手势"
+    "message":"smartUp Relay"
   },
   "ext_desb": {
     "message": "借助smartUp，你可以轻松自如、方便快捷的操控浏览器。功能包括鼠标手势、简易拖曳、超级拖曳等，更多功能还在不断更新中。通过smartUp，我们可以快速地完成相当多的浏览器操作，比如开关浏览器标签页、最大化/最小化窗口等等。当然，你也可以通过smartUp快速的拉起其他扩展（这些扩展可能需要一点点的改动）。"
@@ -18,7 +18,7 @@
     "message": "反馈:"
   },
   "icon_tip":{
-    "message":"smartUp手势在当前页面不能正常运行！"
+    "message":"smartUp Relay在当前页面不能正常运行！"
   },
   "opt_title": {
     "message": "设置"
@@ -141,7 +141,7 @@
     "message":"按[ESC]键取消当前操作"
   },
   "con_background":{
-    "message":"使Chrome一直保持后台运行以加快smartUp手势的响应速度。（需要请求background权限）"
+    "message":"使Chrome一直保持后台运行以加快smartUp Relay的响应速度。（需要请求background权限）"
   },
   "con_draggable":{
     "message":"当被拖动元素被设置为可拖动时[draggable=true]，禁用拖曳"
@@ -753,7 +753,7 @@
     "message":"网址自减一"
   },
   "extdisable":{
-    "message":"在当前页暂时禁用smartUp手势"
+    "message":"在当前页暂时禁用smartUp Relay"
   },
   "general": {
     "message": "通用选项"
@@ -1332,7 +1332,7 @@
     "message":"开关功能选项的菜单"
   },
   "ctm_disable":{
-    "message":"在当前页暂时禁用smartUp手势"
+    "message":"在当前页暂时禁用smartUp Relay"
   },
   "ctm_opt":{
     "message":"设置"
@@ -1367,7 +1367,7 @@
   "review":{
     "message":"评分与评论"
   },
-  "perdes_browsersettings":{"message":"由于非Windows平台上，鼠标右键菜单在按下鼠标按键按下后就出现，导致与使用右键操作的鼠标手势冲突，导致鼠标手势不可用。为消除该影响，smartUp手势需要请求额外的权限（‘browserSettings’）来改变右键菜单的弹出方式（仅Firefox）。本页面只出现一次，你也可以通过以下路径再次尝试开启：通用选项》Linux/MAC选项》尝试设置右键菜单延后出现。详情请参考：https://developer.mozilla.org/Add-ons/WebExtensions/API/browserSettings。"},
+  "perdes_browsersettings":{"message":"由于非Windows平台上，鼠标右键菜单在按下鼠标按键按下后就出现，导致与使用右键操作的鼠标手势冲突，导致鼠标手势不可用。为消除该影响，smartUp Relay需要请求额外的权限（‘browserSettings’）来改变右键菜单的弹出方式（仅Firefox）。本页面只出现一次，你也可以通过以下路径再次尝试开启：通用选项》Linux/MAC选项》尝试设置右键菜单延后出现。详情请参考：https://developer.mozilla.org/Add-ons/WebExtensions/API/browserSettings。"},
   "opt_mouseup":{"message":"尝试设置右键菜单延后出现"},
   "des_mouseup":{"message":"该选项可以消除右键菜单与鼠标手势操作的冲突。需要请求'browserSettings'权限，仅适用于Firefox58+。"},
   "touch":{
@@ -1542,7 +1542,7 @@
     "message":"设置保存失败。错误信息如下："
   },
   "msg_conferr1":{
-    "message":"smartUp手势将尝试回滚到之前的设置。"
+    "message":"smartUp Relay将尝试回滚到之前的设置。"
   },
   "notif_title_conferr":{
     "message":"设置保存失败！"
@@ -1713,7 +1713,7 @@
     "message":"显示二维码"
   },
   "n_suyourls":{
-    "message":"使用smartUp手势提供的短网址服务"
+    "message":"使用smartUp Relay提供的短网址服务"
   },
   "app_shorturl_keyholder":{
     "message":"输入关键词，留空则自动生成"

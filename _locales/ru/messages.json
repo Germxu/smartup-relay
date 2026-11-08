@@ -3,7 +3,7 @@
     "message": "A customizable web browser extension that enhances productivity and efficiency through the use of mouse."
   },
   "ext_name":{
-    "message":"Жесты smartUp"
+    "message":"smartUp Relay"
   },
   "ext_desb": {
     "message": "SmartUp поможет вам использовать Chrome более удобно и быстро, из особенностей: жесты мышью, перетаскивание, супер перетаскивание и так далее. С его помощью можно быстро выполнить наиболее распространенные операции, такие как закрыть вкладку, открыть новую, свернуть или развернуть окно. А еще можно запустить другое расширение (с изменениями)."
@@ -18,7 +18,7 @@
     "message": "Обратная связь:"
   },
   "icon_tip":{
-    "message":"smartUp Gestures не может работать идеально на этой вкладке!"
+    "message":"smartUp Relay не может работать идеально на этой вкладке!"
   },
   "opt_title": {
     "message": "Настройки"
@@ -1355,7 +1355,7 @@
   "review":{
     "message":"Оценка и комментарий"
   },
-  "perdes_browsersettings":{"message":"Т.к. использование жестов мыши на не-Windows платформах конфликтует с контекстным меню, то для работы smartUp Gestures необходимо запросить разрешение. После выдачи разрешения, вы должны перезапустить браузер. Для дополнительной информации: https://developer.mozilla.org/Add-ons/WebExtensions/API/browserSettings. Это страница будет показана только один раз, позже можно установить в: General>Linux/Mac Settings>Попробовать установить контекстное меню после события mouseup."},
+  "perdes_browsersettings":{"message":"Т.к. использование жестов мыши на не-Windows платформах конфликтует с контекстным меню, то для работы smartUp Relay необходимо запросить разрешение. После выдачи разрешения, вы должны перезапустить браузер. Для дополнительной информации: https://developer.mozilla.org/Add-ons/WebExtensions/API/browserSettings. Это страница будет показана только один раз, позже можно установить в: General>Linux/Mac Settings>Попробовать установить контекстное меню после события mouseup."},
   "opt_mouseup":{"message":"Попробовать установить контекстное меню после события mouseup"},
   "des_mouseup":{"message":"Исправьте конфликт между жестами мыши и контекстным меню. Только Firefox 58+. Нужно разрешение 'browserSettings'."},
   "touch":{

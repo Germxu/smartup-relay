@@ -174,6 +174,8 @@ var	config,
 	_SYNC,
 	browserType,
 	timerSaveConf;
+let configReady=false;
+let configReadyCallbacks=[];
 let localConfig;
 
 //check browser
@@ -1024,10 +1026,25 @@ let loadLocalConfig=function(){
 		localConfig=items.local;
 	})
 }
+function markConfigReady(){
+	if(!configReady){
+		configReady=true;
+		let callbacks=configReadyCallbacks;
+		configReadyCallbacks=[];
+		for(let i=0;i<callbacks.length;i++){
+			callbacks[i]();
+		}
+		ensureContentScriptForAllTabs();
+	}
+}
 let loadConfig=function(noInit,type){
 	function needInit(){
 		//if(!config.version){config.version=37;}
-		sub.init();
+		try{
+			sub.init();
+		}finally{
+			markConfigReady();
+		}
 		return;
 		if(noInit){
 
@@ -1094,7 +1111,7 @@ var appConfmodel={
 	recentclosed:{n_num:10,n_closebox:true},
 	synced:{n_closebox:true},
 	jslist:{n_closebox:true},
-	homepage:{n_optype:"s_new",n_position:"s_default",n_pin:false,n_closebox:true,n_homepage_icon:true,n_homepage_bg:true,n_homepage_resize:true,n_homepage_last:true,type:"topsites",sitegroup:[chrome.i18n.getMessage("homepage_groupdefault")],sites:[[{title:"smartUp Gestures",url:"https://smartup.zimoapps.com/"}]],site:[{title:"Google",url:"https://www.google.com"}]},
+	homepage:{n_optype:"s_new",n_position:"s_default",n_pin:false,n_closebox:true,n_homepage_icon:true,n_homepage_bg:true,n_homepage_resize:true,n_homepage_last:true,type:"topsites",sitegroup:[chrome.i18n.getMessage("homepage_groupdefault")],sites:[[{title:"smartUp Relay",url:"https://github.com/Germxu/smartup-relay"}]],site:[{title:"Google",url:"https://www.google.com"}]},
 	tbkjx:{n_num:50,n_optype:"s_new",n_position:"s_default",n_pin:false},
 	extmgm:{n_uninstallconfirm:true,n_enableallconfirm:true,n_disableallconfirm:true,always:[]/*,group:[chrome.i18n.getMessage("extmgm_gplast"),chrome.i18n.getMessage("extmgm_gpalways")],exts:[]*/},
 	notepad:{
@@ -3994,17 +4011,24 @@ var sub={
 			case"evt_getconf":
 			case"pop_getconf":
 			case"opt_getconf":
-				let _conf={
-					type:message.type,
-					defaultConf:defaultConf,
-					config:config,
-					devMode:devMode,
-					os:sub.cons.os,
-					donateData:sub.cons.donateData,
-					reason:sub.cons.reason
+				let respondWithConfig=function(){
+					let _conf={
+						type:message.type,
+						defaultConf:defaultConf,
+						config:config,
+						devMode:devMode,
+						os:sub.cons.os,
+						donateData:sub.cons.donateData,
+						reason:sub.cons.reason
+					}
+					message.type==="opt_getconf"?sub.cons.reason="update":null;
+					sendResponse(_conf);
+				};
+				if(configReady){
+					respondWithConfig();
+				}else{
+					configReadyCallbacks.push(respondWithConfig);
 				}
-				message.type==="opt_getconf"?sub.cons.reason="update":null;
-				sendResponse(_conf);
 				break;
 			case"opt_getpers":
 				sub.checkPermission(message.value.thepers,message.value.theorgs,message.value.theFunction,message.value.msg);
@@ -4961,7 +4985,7 @@ else{
 				chrome.tabs.create({url:"../html/options.html"});
 				// const oninstallAd = sub.cons.reason!="install" || sub.cons.donateData?.ad[0]?.find(ad => ad.type === "ad-oninstall_popup" && !ad.on);
 				// if (oninstallAd) break;
-				// chrome.tabs.create({url:"https://www.usechatgpt.ai/partner-referral?ref=smartupgestures"});
+				// chrome.tabs.create({url:"https://www.usechatgpt.ai/partner-referral?ref=smartup-relay"});
 				break;
 		}
 	})
@@ -4989,16 +5013,52 @@ else{
 chrome.contextMenus.onClicked.addListener(function(info,tab){
 	sub.CTMclick(info,tab);
 })
-function ensureContentScript(tabId, tabInfo) {
-	if (!tabId) { return; }
+const contentScriptChecks=new Set();
+function retryContentScriptCheck(tabId, retries) {
+	if(retries<=0){return;}
+	setTimeout(function(){
+		chrome.tabs.get(tabId,function(tab){
+			if(chrome.runtime.lastError){chrome.runtime.lastError;return;}
+			ensureContentScript(tabId,tab,retries-1);
+		});
+	},400);
+}
+
+function ensureContentScript(tabId, tabInfo, retries) {
+	retries=retries===undefined?3:retries;
+	if (!configReady || !tabId || !chrome.scripting || contentScriptChecks.has(tabId)) { return; }
 	if (tabInfo && !isInjectableUrl(tabInfo.url)) { return; }
-	chrome.tabs.sendMessage(tabId, { type: "status" }, function (response) {
-		if (!chrome.runtime.lastError && response && response.message) {
+	if (tabInfo && tabInfo.status==="loading") {
+		retryContentScriptCheck(tabId,retries);
+		return;
+	}
+	contentScriptChecks.add(tabId);
+	chrome.scripting.executeScript({
+		target:{tabId:tabId,frameIds:[0]},
+		func:function(){ return true; }
+	},function(result){
+		if(chrome.runtime.lastError||!result||!result.length){
+			let failed=!!chrome.runtime.lastError||!result||!result.length;
+			if(chrome.runtime.lastError){chrome.runtime.lastError;}
+			contentScriptChecks.delete(tabId);
+			if(failed){retryContentScriptCheck(tabId,retries-1);}
 			return;
 		}
-		chrome.runtime.lastError;
-		chrome.tabs.executeScript(tabId, { file: "js/event.js", runAt: "document_start", allFrames: true }, function () {
+		chrome.tabs.sendMessage(tabId,{type:"status"},{frameId:0},function(response){
+			if(!chrome.runtime.lastError&&response&&response.message){
+				contentScriptChecks.delete(tabId);
+				return;
+			}
 			chrome.runtime.lastError;
+			chrome.scripting.executeScript({
+				target:{tabId:tabId,frameIds:[0]},
+				files:["js/event.js"]
+			},function(){
+				let failed=!!chrome.runtime.lastError;
+				if(failed){chrome.runtime.lastError;}
+				contentScriptChecks.delete(tabId);
+				if(failed){retryContentScriptCheck(tabId,retries-1);}
+			});
 		});
 	});
 }
@@ -5010,7 +5070,9 @@ function ensureContentScriptForAllTabs() {
 			return;
 		}
 		for (var i = 0; i < tabs.length; i++) {
-			ensureContentScript(tabs[i].id, tabs[i]);
+			if(tabs[i].status==="complete"){
+				ensureContentScript(tabs[i].id, tabs[i]);
+			}
 		}
 	});
 }
@@ -5031,6 +5093,11 @@ chrome.tabs.onUpdated.addListener(function(tabId,changeInfo,tab){
 		}
 	})
 
+})
+chrome.tabs.onCreated.addListener(function(tab){
+	if(tab&&tab.id){
+		ensureContentScript(tab.id,tab);
+	}
 })
 chrome.tabs.onActivated.addListener(function(activeInfo){
 	if(!activeInfo||!activeInfo.tabId){return;}
@@ -5056,7 +5123,7 @@ chrome.runtime.onMessage.addListener(function(message,sender,sendResponse) {
 });
 if (chrome.runtime.onStartup) {
 	chrome.runtime.onStartup.addListener(function () {
-		ensureContentScriptForAllTabs();
+		if(configReady){ensureContentScriptForAllTabs();}
 	});
 }
 chrome.runtime.onConnect.addListener(function(port) {
@@ -5073,7 +5140,6 @@ chrome.runtime.onConnect.addListener(function(port) {
 	}
 });
 loadConfig();
-ensureContentScriptForAllTabs();
 //browsersettings
 if(chrome.browserSettings&&chrome.browserSettings.contextMenuShowEvent){
 	browser.browserSettings.contextMenuShowEvent.set({value:"mouseup"});
