@@ -3178,10 +3178,10 @@ var suo={
 	},
 	initLog:function(){
 		console.log("log")
-		var xhr = new XMLHttpRequest();
-		xhr.onreadystatechange=function(){
-			if (xhr.readyState == 4){
-				var xhrLog=JSON.parse(xhr.response);
+		fetch(chrome.runtime.getURL("change.log"))
+			.then(function(response){ return response.text(); })
+			.then(function(text){
+				var xhrLog=JSON.parse(text);
 				var domlog=document.querySelector(".set.set-135.confobj>.setcontent");
 					domlog.textContent=""
 
@@ -3216,9 +3216,6 @@ var suo={
 						domlog.appendChild(dom);						
 					}
 				}
-				// var _details=suo.domCreate2("details");
-				// var _summary=suo.domCreate2("summary",null,null,null,null,"more...");
-				// _details.appendChild(_summary);
 				for(var i=0;i<xhrLog.oldlog.length;i++){
 					var dom=suo.domCreate2("details");
 					var _summary=suo.domCreate2("summary",null,null,null,null,xhrLog.oldlog[i].ver+" - "+xhrLog.oldlog[i].date);
@@ -3231,11 +3228,10 @@ var suo={
 					dom.appendChild(_ul);
 					_detailsMore.appendChild(dom);
 				}
-				// domlog.appendChild(_details);
-			}
-		}
-		xhr.open('GET',"../change.log", true);
-		xhr.send();
+			})
+			.catch(function(err){
+				console.log(err);
+			});
 	},
 	fixURL:function(url){
 		//if()
