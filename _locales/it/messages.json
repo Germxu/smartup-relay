@@ -3,7 +3,7 @@
     "message": "A customizable web browser extension that enhances productivity and efficiency through the use of mouse."
   },
   "ext_name":{
-    "message":"smartUp Gestures"
+    "message":"smartUp Relay"
   },
   "ext_desb": {
     "message": "smartUp aiuta ad usare Firefox in maniera più veloce ed efficiente, attraverso la gestione dei movimenti del mouse e dei link. E' possibile eseguire operazioni come la chiusura di una scheda o di ridurre ad icona o ingrandire la finestra del browser. E' anche possibile eseguire un'altra estensione (con poche modifiche)."
@@ -18,7 +18,7 @@
     "message": "Feedback:"
   },
   "icon_tip":{
-    "message":"smartUp Gestures can't works perfectly in this tab!"
+    "message":"smartUp Relay can't works perfectly in this tab!"
   },
   "opt_title": {
     "message": "Impostazioni"
@@ -1352,7 +1352,7 @@
   "review":{
     "message":"Revisione"
   },
-  "perdes_browsersettings":{"message":"Because using mouse gestures on non-Windows platforms conflicts with right-click menus, ensuring a better operating experience, smartUp Gestures needs to request this permission to fix the bug (only Firefox). After getting permission, you need to restart the browser to make it works. For more information: https://developer.mozilla.org/Add-ons/WebExtensions/API/browserSettings. This page only show only one time, or set it again from: General>Linux/Mac Settings>Try to set context menu popup after mouseup."},
+  "perdes_browsersettings":{"message":"Because using mouse gestures on non-Windows platforms conflicts with right-click menus, ensuring a better operating experience, smartUp Relay needs to request this permission to fix the bug (only Firefox). After getting permission, you need to restart the browser to make it works. For more information: https://developer.mozilla.org/Add-ons/WebExtensions/API/browserSettings. This page only show only one time, or set it again from: General>Linux/Mac Settings>Try to set context menu popup after mouseup."},
   "opt_mouseup":{"message":"Try to set context menu popup after mouseup"},
   "des_mouseup":{"message":"Fix the conflict between the mouse gesture and the context menu. Only Firefox 58+. Need request permission 'browserSettings'."},
   "touch":{

@@ -1,12 +1,12 @@
-![https://img.shields.io/github/issues/zimocode/smartup](https://user-images.githubusercontent.com/29518677/113705830-7c8fc580-9710-11eb-9b75-f2eddd761590.png)
+![https://img.shields.io/github/issues/Germxu/smartup-relay](https://user-images.githubusercontent.com/29518677/113705830-7c8fc580-9710-11eb-9b75-f2eddd761590.png)
 
-# smartUp Gestures 
+# smartUp Relay
 
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/zimocode/smartup?logo=github&logoColor=white)
-![GitHub Repo stars](https://img.shields.io/github/stars/zimocode/smartup?logo=github&logoColor=white)
-![GitHub forks](https://img.shields.io/github/forks/zimocode/smartup?logo=github&logoColor=white)
-![GitHub issues](https://img.shields.io/github/issues-raw/zimocode/smartup?logo=github&logoColor=white)
-![GitHub](https://img.shields.io/github/license/zimocode/smartup?logo=github&logoColor=white)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/Germxu/smartup-relay?logo=github&logoColor=white)
+![GitHub Repo stars](https://img.shields.io/github/stars/Germxu/smartup-relay?logo=github&logoColor=white)
+![GitHub forks](https://img.shields.io/github/forks/Germxu/smartup-relay?logo=github&logoColor=white)
+![GitHub issues](https://img.shields.io/github/issues-raw/Germxu/smartup-relay?logo=github&logoColor=white)
+![GitHub](https://img.shields.io/github/license/Germxu/smartup-relay?logo=github&logoColor=white)
 
 |  Browser  | Rating  | Users |
 |  ----  | ----  | ---- |
@@ -21,13 +21,13 @@ A customizable web browser mouse gestures extension with a variety of actions. F
 
 ## Leatest release
 
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/zimocode/smartup?logo=github&logoColor=white)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/Germxu/smartup-relay?logo=github&logoColor=white)
 
 ## Install
 
 ### Install by online
 
-smartUP Gestures has ben uploaded to these browser's extension store, you'll install it quickly.
+smartUp Relay has ben uploaded to these browser's extension store, you'll install it quickly.
 
 |  Browser  | URL  |
 |  ----  | ----  |
@@ -37,4 +37,4 @@ smartUP Gestures has ben uploaded to these browser's extension store, you'll ins
 
 ## License
 
-[![License](https://img.shields.io/github/license/zimocode/smartup?logo=github&logoColor=white)](LICENSE)
+[![License](https://img.shields.io/github/license/Germxu/smartup-relay?logo=github&logoColor=white)](LICENSE)

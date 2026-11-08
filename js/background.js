@@ -1111,7 +1111,7 @@ var appConfmodel={
 	recentclosed:{n_num:10,n_closebox:true},
 	synced:{n_closebox:true},
 	jslist:{n_closebox:true},
-	homepage:{n_optype:"s_new",n_position:"s_default",n_pin:false,n_closebox:true,n_homepage_icon:true,n_homepage_bg:true,n_homepage_resize:true,n_homepage_last:true,type:"topsites",sitegroup:[chrome.i18n.getMessage("homepage_groupdefault")],sites:[[{title:"smartUp Gestures",url:"https://smartup.zimoapps.com/"}]],site:[{title:"Google",url:"https://www.google.com"}]},
+	homepage:{n_optype:"s_new",n_position:"s_default",n_pin:false,n_closebox:true,n_homepage_icon:true,n_homepage_bg:true,n_homepage_resize:true,n_homepage_last:true,type:"topsites",sitegroup:[chrome.i18n.getMessage("homepage_groupdefault")],sites:[[{title:"smartUp Relay",url:"https://github.com/Germxu/smartup-relay"}]],site:[{title:"Google",url:"https://www.google.com"}]},
 	tbkjx:{n_num:50,n_optype:"s_new",n_position:"s_default",n_pin:false},
 	extmgm:{n_uninstallconfirm:true,n_enableallconfirm:true,n_disableallconfirm:true,always:[]/*,group:[chrome.i18n.getMessage("extmgm_gplast"),chrome.i18n.getMessage("extmgm_gpalways")],exts:[]*/},
 	notepad:{
@@ -4985,7 +4985,7 @@ else{
 				chrome.tabs.create({url:"../html/options.html"});
 				// const oninstallAd = sub.cons.reason!="install" || sub.cons.donateData?.ad[0]?.find(ad => ad.type === "ad-oninstall_popup" && !ad.on);
 				// if (oninstallAd) break;
-				// chrome.tabs.create({url:"https://www.usechatgpt.ai/partner-referral?ref=smartupgestures"});
+				// chrome.tabs.create({url:"https://www.usechatgpt.ai/partner-referral?ref=smartup-relay"});
 				break;
 		}
 	})
