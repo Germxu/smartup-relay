@@ -1112,7 +1112,6 @@ var appConfmodel={
 	synced:{n_closebox:true},
 	jslist:{n_closebox:true},
 	homepage:{n_optype:"s_new",n_position:"s_default",n_pin:false,n_closebox:true,n_homepage_icon:true,n_homepage_bg:true,n_homepage_resize:true,n_homepage_last:true,type:"topsites",sitegroup:[chrome.i18n.getMessage("homepage_groupdefault")],sites:[[{title:"smartUp Relay",url:"https://github.com/Germxu/smartup-relay"}]],site:[{title:"Google",url:"https://www.google.com"}]},
-	tbkjx:{n_num:50,n_optype:"s_new",n_position:"s_default",n_pin:false},
 	extmgm:{n_uninstallconfirm:true,n_enableallconfirm:true,n_disableallconfirm:true,always:[]/*,group:[chrome.i18n.getMessage("extmgm_gplast"),chrome.i18n.getMessage("extmgm_gpalways")],exts:[]*/},
 	notepad:{
 		n_notepad_delconfirm:true,
@@ -2708,11 +2707,6 @@ var sub={
 			sub.cons[_appname]=_obj;
 			sub.insertTest(_appname);
 		},
-		tbkjx:function(){
-			var _appname="tbkjx";
-			sub.initAppconf(_appname);
-			sub.insertTest(_appname);
-		},
 		homepage:function(){
 			var theFunction=function(){
 				var _appname="homepage";
@@ -2858,7 +2852,6 @@ var sub={
 			var _obj={}
 			_obj.apps=["rss","tablist","random","extmgm","recentbk","recentht","recentclosed","synced","base64","qr","numc","speaker","jslist","convertcase","autoreload","homepage","magnet"/*,"notepad","shorturl"*/];
 			chrome.tabs.saveAsPDF?_obj.apps.push("savepdf"):null;
-			navigator.language=="zh-CN"?_obj.apps.push("tbkjx"):null;
 			sub.cons[_appname]=_obj;
 			sub.insertTest(_appname);
 		},
@@ -4049,9 +4042,6 @@ var sub={
 						chrome.tabs.executeScript({file:"js/base64.js",runAt:"document_start"},function(){})
 					}else if(message.apptype=="qr"||message.apptype=="magnet"||message.apptype=="shorturl"){
 						chrome.tabs.executeScript({file:"js/qrcode.js",runAt:"document_start"},function(){})
-					}else if(message.apptype=="tbkjx"){
-						chrome.tabs.executeScript({file:"js/purify.js",runAt:"document_start"},function(){});
-						chrome.tabs.executeScript({file:"js/qrcode.js",runAt:"document_start"},function(){});
 					}else if(message.apptype=="notepad"){
 						chrome.tabs.executeScript({file:"js/md5.js",runAt:"document_start"});
 					}
@@ -4694,49 +4684,6 @@ var sub={
 			},
 			setListId:function(message,sender,sendResponse){
 				localStorage.setItem("homepageListId",message.value);
-			}
-		},
-		tbkjx:{
-			getData:function(message,sender,sendResponse){
-				// =======================
-				// let _url="tbkjx.json",
-				// 	_configURL="https://quan.zimoapps.com/push/config.json"+"?"+sub.date.getTime();
-				// =======================
-				let _url="https://quan.zimoapps.com/push/tbkjx.json",
-					_configURL="https://quan.zimoapps.com/push/config.json"+"?"+sub.date.getTime();
-				fetch(_configURL)
-					.then(response=>response.json())
-					.then(json=>{
-						console.log(_configURL);
-						if(!localStorage.getItem("tbkjx_dataversion")||Number(json.version)>=sub.date.get()){
-							_url=_url+"?"+sub.date.get().toString();
-							localStorage.setItem("tbkjx_dataversion",json.version);
-						}else{
-							_url=_url+"?"+localStorage.getItem("tbkjx_dataversion");
-						}
-						console.log(_url);
-						fetch(_url)
-							.then(response=>response.json())
-							.then(json=>{
-								chrome.tabs.sendMessage(sender.tab.id,{type:"data",value:json});
-							})
-					})
-				// =======================
-
-				// let _date=new Date();
-				// _url=_url+"?"+_date.getFullYear()+((_date.getMonth()+1)<10?("0"+(_date.getMonth()+1)):(_date.getMonth()+1))+(_date.getDate()<10?("0"+_date.getDate()):_date.getDate())
-				// fetch(_url)
-				// 	.then(response=>response.json())
-				// 	.then(json=>{
-				// 		chrome.tabs.sendMessage(sender.tab.id,{type:"data",value:json});
-				// 	})
-			},
-			itemOpen:function(message,sender,sendResponse){
-				let _URL=message.value,
-					_Target=config.apps[message.app].n_optype,
-					_Index=sub.getIndex(config.apps[message.app].n_position,"new")[0],
-					_Pin=config.apps[message.app].n_pin;
-				sub.open(_URL,_Target,_Index,_Pin);
 			}
 		},
 		notepad:{

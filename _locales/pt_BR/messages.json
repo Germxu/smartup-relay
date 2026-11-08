@@ -152,9 +152,6 @@
    "app_synced_switch": {
       "message": "Alternar dispositivo sincronizado: "
    },
-   "app_tbkjx_num": {
-      "message": "Número de itens da lista"
-   },
    "app_tip_info": {
       "message": "Informação"
    },
@@ -1705,9 +1702,6 @@
    },
    "tablist": {
       "message": "Lista de abas"
-   },
-   "tbkjx": {
-      "message": "Cupom"
    },
    "tdrg": {
       "message": "Ações de texto"

@@ -22,7 +22,7 @@ Some optional features make network requests. The recipient of a request can rec
 - **RSS reader:** The extension requests the feed URL configured by the user and reads the returned feed to display its entries. The feed provider receives the request in the same way as a normal web request.
 - **Image copying:** When the user invokes the image-copy action, the extension requests the selected image from its source so it can place the image on the clipboard. The image host receives that request.
 - **Homepage background:** If the user enables the related homepage feature, the extension requests public background-image information from Bing and may fetch the selected image from its image host.
-- **Optional content mini-apps:** Some mini-apps request public content from their configured or built-in providers, including `quan.zimoapps.com` and `www.poxiao.com`. These requests retrieve content for display. A mini-app may also request a URL selected by the user.
+- **Optional content mini-apps:** Some mini-apps request public content from their configured or built-in providers, including `www.poxiao.com`. These requests retrieve content for display. A mini-app may also request a URL selected by the user.
 - **Donation and sponsor configuration:** The extension requests configuration from `apis.zimoapps.com` to determine whether donation or sponsor information is available. This request does not include the user's page URL or extension settings. If a sponsor page is displayed or opened, that third-party site may collect information according to its own privacy policy.
 
 User-facing actions such as shortening a URL, loading an RSS feed, or copying an image are initiated by the user. The donation and sponsor configuration request runs when the extension's background service starts. The extension does not send browsing information to build advertising profiles or sell user data.
@@ -73,7 +73,7 @@ smartUp Relay 是一款浏览器扩展，用于用户自定义的鼠标手势、
 - **RSS 阅读器：** 扩展请求用户配置的 RSS feed 地址，并读取返回内容以显示订阅条目。Feed 服务会像处理普通网页请求一样收到该请求。
 - **复制图片：** 用户触发图片复制动作时，扩展会从图片来源请求所选图片，以便将图片写入剪贴板。图片托管方会收到该请求。
 - **主页背景：** 用户启用相关主页功能后，扩展会向 Bing 请求公开的背景图片信息，并可能从图片托管方获取所选图片。
-- **可选内容迷你应用：** 部分迷你应用会从配置或内置的内容提供方请求公开内容，包括 `quan.zimoapps.com` 和 `www.poxiao.com`。这些请求用于获取并显示内容；迷你应用也可能请求用户选择的网址。
+- **可选内容迷你应用：** 部分迷你应用会从配置或内置的内容提供方请求公开内容，包括 `www.poxiao.com`。这些请求用于获取并显示内容；迷你应用也可能请求用户选择的网址。
 - **捐赠及赞助配置：** 扩展会向 `apis.zimoapps.com` 请求配置，以判断是否提供捐赠或赞助信息。该请求不包含用户当前页面 URL 或扩展设置。如果显示或打开赞助方页面，第三方网站可能根据其自身隐私政策收集信息。
 
 短网址、RSS 和复制图片等面向用户的操作由用户主动触发。捐赠及赞助配置请求会在扩展后台启动时发起。扩展不会发送浏览信息以建立广告画像，也不会出售用户数据。
