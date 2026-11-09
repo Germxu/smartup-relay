@@ -69,7 +69,6 @@ let actions={
 			{name:"saveimg",checks:["n_notif"]},
 			{name:"saveimgas",checks:["n_notif"]},
 			{name:"copyimgurl"},
-			{name:"copyimg"},
 			{name:"imgsearch",selects:["n_imgengine","n_encoding","n_optype","n_position"],checks:["n_pin"]}
 		],
 
@@ -82,7 +81,6 @@ let actions={
 			{name:"reloadext"}
 		],
 		[//group apps
-			{name:"rss"},
 			{name:"tablist"},
 			{name:"random"},
 			{name:"extmgm"},
@@ -101,7 +99,6 @@ let actions={
 			{name:"appslist"},
 			{name:"magnet"},
 			/*{name:"notepad"},
-			{name:"shorturl"}
 			{name:"gmail"},
 			{name:"ary"},
 			{name:"color"},
@@ -177,7 +174,6 @@ let actions={
 			{name:"imgsearch",selects:["n_imgengine","n_encoding","n_optype","n_position"],checks:["n_pin"]},
 			{name:"saveimg",checks:["n_dlbar","n_notif"]},
 			{name:"saveimgas",checks:["n_dlbar","n_notif"]},
-			{name:"copyimg"}
 		]
 	]
 }
@@ -431,7 +427,6 @@ chrome.tts?chrome.tts.getVoices(function(voice){
 }):null;
 
 //copy image
-// (chrome.clipboard&&chrome.clipboard.setImageData)?null:actionRemove(["copyimg"]);
 
 //save pdf
 (!chrome.tabs.saveAsPDF)?actionRemove(["savepdf"]):null;

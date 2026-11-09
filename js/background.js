@@ -953,11 +953,6 @@ var getDefault={
 						shift:false						
 					}]
 				},
-				about:{
-					donatedev:{
-						ad:true
-					}
-				}
 			}	
 		switch(navigator.language.toLowerCase()){
 			case"zh-cn":
@@ -1102,7 +1097,6 @@ let loadConfig=function(noInit,type){
 }
 
 var appConfmodel={
-	rss:{feed:["https://www.cnet.com/rss/news/"],n_optype:"s_back",n_position:"s_default",n_pin:false,n_closebox:false},
 	tablist:{n_closebox:true},
 	recentbk:{n_optype:"s_back",n_position:"s_default",n_pin:false,n_num:10,n_closebox:false},
 	recentht:{n_optype:"s_back",n_position:"s_default",n_pin:false,n_num:10,n_closebox:false},
@@ -1111,19 +1105,13 @@ var appConfmodel={
 	recentclosed:{n_num:10,n_closebox:true},
 	synced:{n_closebox:true},
 	jslist:{n_closebox:true},
-	homepage:{n_optype:"s_new",n_position:"s_default",n_pin:false,n_closebox:true,n_homepage_icon:true,n_homepage_bg:true,n_homepage_resize:true,n_homepage_last:true,type:"topsites",sitegroup:[chrome.i18n.getMessage("homepage_groupdefault")],sites:[[{title:"smartUp Relay",url:"https://github.com/Germxu/smartup-relay"}]],site:[{title:"Google",url:"https://www.google.com"}]},
+	homepage:{n_optype:"s_new",n_position:"s_default",n_pin:false,n_closebox:true,n_homepage_icon:true,n_homepage_resize:true,n_homepage_last:true,type:"topsites",sitegroup:[chrome.i18n.getMessage("homepage_groupdefault")],sites:[[{title:"smartUp Relay",url:"https://github.com/Germxu/smartup-relay"}]],site:[{title:"Google",url:"https://www.google.com"}]},
 	extmgm:{n_uninstallconfirm:true,n_enableallconfirm:true,n_disableallconfirm:true,always:[]/*,group:[chrome.i18n.getMessage("extmgm_gplast"),chrome.i18n.getMessage("extmgm_gpalways")],exts:[]*/},
 	notepad:{
 		n_notepad_delconfirm:true,
 		n_notepad_switchsave:true,
 		n_notepad_last:true
 	},
-	shorturl:{
-		n_qr:true,
-		n_suyourls:true,
-		n_yourls:"",
-		n_sign:""
-	}
 }
 
 var sub={
@@ -1138,7 +1126,6 @@ var sub={
 		crversion:(window.navigator.userAgent.substr(window.navigator.userAgent.indexOf("Chrome")+7,100).substr(0,window.navigator.userAgent.substr(window.navigator.userAgent.indexOf("Chrome")+7,100).indexOf(" "))),
 		permissions:{},
 		os:"win",
-		donateData:{donate:[[]],ad:[[]]},
 		reason:"update"
 	},
 	extID:chrome.runtime.id,
@@ -2330,10 +2317,6 @@ var sub={
 			var theorgs;
 			sub.checkPermission(thepers,theorgs,theFunction);
 		},
-		copyimg:function(){
-			if(!sub.message.selEle.img){return;}
-			chrome.tabs.executeScript({file:"js/inject/copyimg.js",runAt:"document_start",allFrames:true},function(){})
-		},
 		imgsearch:function(){
 			if(!sub.message.selEle.img){return;}
 			var engine,theURL,enCoding,enURL;
@@ -2687,11 +2670,6 @@ var sub={
 		},
 
 		//mini apps
-		shorturl:function(){
-			var _appname="shorturl";
-			sub.initAppconf(_appname);
-			sub.insertTest(_appname);
-		},
 		notepad:function(){
 			var _appname="notepad";
 			sub.initAppconf(_appname);
@@ -2729,10 +2707,6 @@ var sub={
 		},
 		convertcase:function(){
 			var _appname="convertcase";
-			sub.insertTest(_appname);
-		},
-		pxmovie:function(){
-			var _appname="pxmovie";
 			sub.insertTest(_appname);
 		},
 		speaker:function(){
@@ -2850,7 +2824,7 @@ var sub={
 			var _appname="appslist";
 			sub.initAppconf(_appname);
 			var _obj={}
-			_obj.apps=["rss","tablist","random","extmgm","recentbk","recentht","recentclosed","synced","base64","qr","numc","speaker","jslist","convertcase","autoreload","homepage","magnet"/*,"notepad","shorturl"*/];
+			_obj.apps=["tablist","random","extmgm","recentbk","recentht","recentclosed","synced","base64","qr","numc","speaker","jslist","convertcase","autoreload","homepage","magnet"/*,"notepad"*/];
 			chrome.tabs.saveAsPDF?_obj.apps.push("savepdf"):null;
 			sub.cons[_appname]=_obj;
 			sub.insertTest(_appname);
@@ -2887,12 +2861,6 @@ var sub={
 		},
 		random:function(){
 			var _appname="random";
-			sub.insertTest(_appname);
-		},
-		rss:function(){
-			var _appname="rss";
-			sub.initAppconf(_appname);
-			var _obj={}
 			sub.insertTest(_appname);
 		},
 		extmgm:function(){
@@ -3389,9 +3357,6 @@ var sub={
 		},
 		_36:function(){
 			if(config.apps){
-				if(config.apps.rss){
-					config.apps.rss.n_pin=(config.apps.rss.n_pin=="s_unpin")?false:true;
-				}
 				if(config.apps.recentht){
 					config.apps.recentht.n_pin=(config.apps.recentht.n_pin=="s_unpin")?false:true;
 				}
@@ -3541,9 +3506,6 @@ var sub={
 			if(!config.apps){
 
 			}else{
-				if(config.apps.rss){
-					config.apps.rss.n_pin=config.apps.rss.n_pin=="s_pin"?true:false;
-				}
 				if(config.apps.recentht){
 					config.apps.recentht.n_pin=config.apps.recentht.n_pin=="s_pin"?true:false;
 				}
@@ -3914,7 +3876,7 @@ var sub={
 			sub.saveConf(true);
 		},
 		f29tof30:function(){
-			var _apps=["rss","tablist","random","extmgm","recentbk","recentht","recentclosed","synced","base64","qr","numc","speaker"];
+			var _apps=["tablist","random","extmgm","recentbk","recentht","recentclosed","synced","base64","qr","numc","speaker"];
 			for(var i=0;i<_apps.length;i++){
 				if(!config.apps){break;}
 				if(config.apps[_apps[i]]&&config.apps[_apps[i]].config){
@@ -4011,7 +3973,6 @@ var sub={
 						config:config,
 						devMode:devMode,
 						os:sub.cons.os,
-						donateData:sub.cons.donateData,
 						reason:sub.cons.reason
 					}
 					message.type==="opt_getconf"?sub.cons.reason="update":null;
@@ -4040,7 +4001,7 @@ var sub={
 					}
 					if(message.apptype=="base64"){
 						chrome.tabs.executeScript({file:"js/base64.js",runAt:"document_start"},function(){})
-					}else if(message.apptype=="qr"||message.apptype=="magnet"||message.apptype=="shorturl"){
+					}else if(message.apptype=="qr"||message.apptype=="magnet"){
 						chrome.tabs.executeScript({file:"js/qrcode.js",runAt:"document_start"},function(){})
 					}else if(message.apptype=="notepad"){
 						chrome.tabs.executeScript({file:"js/md5.js",runAt:"document_start"});
@@ -4239,9 +4200,6 @@ var sub={
 				}
 				sub.initCurrent(sender,sub.theConf);
 				break
-			case"getDonateData":
-				sendResponse({type:"donateData",value:sub.cons.donateData})
-				break;
 			case"appsAction":
 				sub.apps[message.app][message.action](message,sender,sendResponse);
 				//sub.appsAction(message,sendResponse);
@@ -4295,56 +4253,6 @@ var sub={
 			},
 			getConf:function(message,sender,sendResponse){
 				sendResponse({config:config.apps[message.app],value:sub.cons[message.app],tabId:sender.tab.id});
-			}
-		},
-		rss:{
-			getMessage:function(message,sender,sendResponse){
-				console.log(message);
-				url=message.value;
-				fetch(url)
-					.then(response => response.text())
-					.then(str => (new window.DOMParser()).parseFromString(str, "text/xml"))
-					.then(xmlData=>{
-						sub.testdata=xmlData
-						let data={};
-						let replace_cdata=function(str){
-							let newstr;
-							newstr=str.indexOf("<![CDATA[")==0?str.replace("<![CDATA[",""):str;
-							newstr=newstr.indexOf("]]>")==newstr.length-3?newstr.replace("]]>",""):newstr;
-							return newstr;
-						}
-						data={
-							title:replace_cdata(xmlData.querySelector("channel>title")?DOMPurify.sanitize(xmlData.querySelector("channel>title").textContent).toString():"noname"),
-							link:replace_cdata(xmlData.querySelector("channel>image>link")?DOMPurify.sanitize(xmlData.querySelector("channel>image>link").textContent).toString():""),
-							img:replace_cdata(xmlData.querySelector("channel>image>url")?DOMPurify.sanitize(xmlData.querySelector("channel>image>url").textContent).toString():chrome.runtime.getURL("/image/rss.svg"))
-						}
-
-						let items=xmlData.querySelectorAll("item");
-						data.items=[];
-						for(var i=0;i<items.length;i++){
-							var _nodes=items[i].childNodes;
-						    var _object={};
-							for(var ii=0;ii<_nodes.length;ii++){
-								if(_nodes[ii].tagName){
-									_object[_nodes[ii].tagName.toLowerCase()]=DOMPurify.sanitize(replace_cdata(_nodes[ii].textContent)).toString();
-								}
-							}
-							data.items.push(_object);
-						}
-						return data;
-					})
-					.then(data=>{
-						console.log(data);
-						chrome.tabs.sendMessage(sender.tab.id,{type:"rssData",value:data,feedURL:url});
-					})
-					.catch(err=>console.log(err))
-			},
-			openItem:function(message){
-				let _URL=message.value,
-					_Target=config.apps[message.app].n_optype,
-					_Index=sub.getIndex(config.apps[message.app].n_position,"new")[0],
-					_Pin=config.apps[message.app].n_pin;
-				sub.open(_URL,_Target,_Index,_Pin);
 			}
 		},
 		tablist:{
@@ -4545,80 +4453,6 @@ var sub={
 				})
 			}
 		},
-		pxmovie:{
-			getList:function(message,sender,sendResponse){
-				fetch("https://www.poxiao.com/")
-					.then(response=>response.blob())
-					.then(blob=>{
-						var reader = new FileReader();
-						reader.onload = function(e) {
-							var htmlData = reader.result;
-							htmlData=(new window.DOMParser()).parseFromString(htmlData,"text/html");
-							console.log(htmlData);
-							var data=[];
-							var _doms=htmlData.querySelectorAll(".container .content ul")[0].querySelectorAll("li");
-							for(var i=0;i<_doms.length;i++){
-								var _data=[];
-								for(var ii=0;ii<_doms[i].childNodes.length;ii++){
-									_data.push(DOMPurify.sanitize(_doms[i].childNodes[ii].textContent).toString());
-								}
-								_data.push("https://www.poxiao.com"+_doms[i].childNodes[2].getAttribute("href"))
-								data.push(_data);
-							}
-							console.log(data)
-							chrome.tabs.sendMessage(sender.tab.id,{type:"list",value:data});
-						}
-						reader.readAsText(blob, 'GBK') 
-					})
-			},
-			getData:function(message,sender,sendResponse){
-				fetch(message.value)
-					.then(response=>response.blob())
-					.then(blob=>{
-						let reader = new FileReader();
-						reader.onload = function(e) {
-							let htmlData = reader.result;
-							htmlData=(new window.DOMParser()).parseFromString(htmlData,"text/html");
-							console.log(htmlData);
-							let data={
-								info:[],
-								dl:[],
-								des:"",
-								name:""
-							};
-							let domInfos=htmlData.querySelector(".container .detail_intro tbody").querySelectorAll("tr");
-							for(var i=0;i<domInfos.length;i++){
-								var _doms=domInfos[i].querySelectorAll("td"),
-									_data=[];
-								for(var ii=0;ii<_doms.length;ii++){
-									if(_doms[ii].childNodes.length>1){
-										for(var iii=0;iii<_doms[ii].childNodes.length;iii++){
-											_data.push(DOMPurify.sanitize(_doms[ii].childNodes[iii].textContent).toString());
-										}
-									}else{
-										_data.push(DOMPurify.sanitize(_doms[ii].textContent).toString());
-									}
-								}
-								data.info.push(_data);
-							}
-
-							let domDls=htmlData.querySelector(".container #ziy .resourcesmain tbody").querySelectorAll("tr");
-							for(var i=0;i<domDls.length-1;i++){
-								var _data=[];
-								_data.push(DOMPurify.sanitize(domDls[i].querySelector("td ").textContent).toString());
-								_data.push(DOMPurify.sanitize(domDls[i].querySelector("td input").value.substr(6)).toString());
-								data.dl.push(_data)
-							}
-
-							data.des=DOMPurify.sanitize(htmlData.querySelectorAll(".filmcontents p")[1].textContent).toString();
-							data.name=DOMPurify.sanitize(htmlData.querySelector(".container #film h1").childNodes[0].textContent).toString();
-
-							chrome.tabs.sendMessage(sender.tab.id,{type:"data",value:data});
-						}
-						reader.readAsText(blob, 'GBK') 
-					})
-			}
-		},
 		homepage:{
 			openItem:function(message,sender,sendResponse){
 				let _URL=message.value,
@@ -4626,61 +4460,6 @@ var sub={
 					_Index=sub.getIndex(config.apps[message.app].n_position,"new")[0],
 					_Pin=config.apps[message.app].n_pin;
 				sub.open(_URL,_Target,_Index,_Pin);
-			},
-			getImageURL:async function(message,sender,sendResponse){
-				let db=await sub.IDB.DBGet("homepage"),
-					data;
-				if(db.version<2){
-					db.close();
-					data=await sub.IDB.initApps("homepage");
-					console.log(data)
-				}else{
-					data=await sub.IDB.itemGet(db,"bingimg",0);
-				}
-				console.log(data)
-				if(data){
-					data={
-						id:0,
-						imageURL:data.base64,
-						copyrightString:data.copyrightString,
-						copyrightURL:data.copyrightURL
-					}
-					chrome.tabs.sendMessage(sender.tab.id,{type:"imageURL",value:data});
-				}
-
-				try {
-					let response = await fetch("https://bing.com/HPImageArchive.aspx?idx=0&n=1");
-					let data=await response.text();
-						data=(new window.DOMParser()).parseFromString(data, "text/xml");
-					let _data={
-						id:0,
-						imageURL:"https://www.bing.com"+DOMPurify.sanitize(data.querySelector("images>image>url").textContent).toString(),
-						copyrightString:DOMPurify.sanitize(data.querySelector("images>image>copyright").textContent).toString(),
-						copyrightURL:DOMPurify.sanitize(data.querySelector("images>image>copyrightlink").textContent).toString()
-					};
-					if(localStorage.getItem("homepageURL")!=_data.imageURL){
-						chrome.tabs.sendMessage(sender.tab.id,{type:"imageURL",value:_data});
-						sub.apps.homepage.getImage(message,sender,sendResponse,_data);
-					}
-				} catch(e) {
-					console.log(e.toString());
-				}
-			},
-			getImage:async function(message,sender,sendResponse,data){
-				let response=await fetch(data.imageURL);
-					response=await response.blob();
-				let reader = new FileReader();
-				reader.readAsDataURL(response); 
-				reader.onloadend = function(){
-					data.base64=reader.result;
-					(async function(){
-						let db=await sub.IDB.DBGet("homepage");
-						await sub.IDB.itemModify(db,"bingimg",0,data);
-						if(localStorage.getItem("homepageURL")!=data.imageURL){
-							localStorage.setItem("homepageURL",data.imageURL);
-						}						
-					})();
-				}
 			},
 			setListId:function(message,sender,sendResponse){
 				localStorage.setItem("homepageListId",message.value);
@@ -4709,48 +4488,10 @@ var sub={
 					db=await sub.IDB.itemModify(db,"note",message.value.data.id,message.value.data);
 			}
 		},
-		shorturl:{
-			getURL:async function(message,sender,sendResponse){
-				console.log(message);
-				try {
-					let response = await fetch(
-						(config.apps.shorturl.n_suyourls?"https://url.zimoapps.com/yourls-api.php":config.apps.shorturl.n_yourls+"/yourls-api.php")
-						+"?action=shorturl"
-						+"&format=json"
-						+"&keyword="+message.value.key
-						+"&url="+encodeURIComponent(sender.url)
-						+"&signature="+(config.apps.shorturl.n_suyourls?"ab279117c0":config.apps.shorturl.n_sign),
-						{
-							method:"POST"
-						});
-					let data=await response.json();
-					console.log(data);
-					chrome.tabs.sendMessage(sender.tab.id,{type:"url",app:"shorturl",value:data});
-				} catch(e) {
-					console.log(e.toString());
-					chrome.tabs.sendMessage(sender.tab.id,{type:"err",app:"shorturl",value:e.toString()});
-				}
-			}
-		}
-	},
-	IDB:{
 		initApps:function(appname){
 			return new Promise((resolve,reject)=>{
 				let db;
 				switch(appname){
-					case"homepage":
-						(async function(){
-							db=await sub.IDB.DBUpgrade(appname,2);
-							db=await sub.IDB.DBInit(db,"bingimg","id");
-							db=await sub.IDB.itemSet(db,"bingimg",{
-								id:0,
-								imageURL:"",
-								copyrightString:"",
-								copyrightURL:""
-							});
-							resolve(db);
-						})()
-						break;
 					case"notepad":
 						(async function(){
 							db=await sub.IDB.DBUpgrade(appname,2);
@@ -4930,9 +4671,6 @@ else{
 				break;
 			case"install":
 				chrome.tabs.create({url:"../html/options.html"});
-				// const oninstallAd = sub.cons.reason!="install" || sub.cons.donateData?.ad[0]?.find(ad => ad.type === "ad-oninstall_popup" && !ad.on);
-				// if (oninstallAd) break;
-				// chrome.tabs.create({url:"https://www.usechatgpt.ai/partner-referral?ref=smartup-relay"});
 				break;
 		}
 	})
@@ -5073,19 +4811,6 @@ if (chrome.runtime.onStartup) {
 		if(configReady){ensureContentScriptForAllTabs();}
 	});
 }
-chrome.runtime.onConnect.addListener(function(port) {
-	switch(port.name){
-		case"fn_copyimg":
-			port.onMessage.addListener(async function(msg){
-				var _img=await fetch(sub.message.selEle.img);
-					_img=await _img.blob();
-					_img=await URL.createObjectURL(_img);
-				console.log(_img);
-				port.postMessage(_img);
-			})
-			break;
-	}
-});
 loadConfig();
 //browsersettings
 if(chrome.browserSettings&&chrome.browserSettings.contextMenuShowEvent){
@@ -5096,49 +4821,3 @@ if(chrome.browserSettings&&chrome.browserSettings.contextMenuShowEvent){
 	sub.checkPermission(["browserSettings"],null,null,sub.getI18n("perdes_browsersettings"));
 	localStorage.setItem("flag_mouseup","true");
 }
-
-getDonate=()=>{
-	let localType=navigator.language,
-		_url="https://apis.zimoapps.com/su";
-		// _url="http://172.30.246.4:1024/su";
-	localType=localType.replace("-","_");
-	fetch(_url,{
-		method:"GET",
-		cache:"no-cache"
-	}).then(response=>response.json())
-	.then(response=>{
-		let data={
-			donate:[],
-			ad:[]
-		}
-		let donateCfg=response&&response[0]&&response[0].donate&&response[0].donate[0]?response[0].donate[0]:null;
-		let adCfg=response&&response[1]&&response[1].ad&&response[1].ad[0]?response[1].ad[0]:null;
-		if(response&&response[0]&&response[0]["on"]&&donateCfg&&donateCfg[localType]){
-			data.donate.push(donateCfg[localType]);
-		}else{
-			if(donateCfg&&donateCfg["default"]){
-				data.donate.push(donateCfg["default"]);
-			}else{
-				data.donate.length=0;
-			}
-		}
-		if(response&&response[1]&&response[1]["on"]&&adCfg&&adCfg[localType]){
-			data.ad.push(adCfg[localType]);
-		}else{
-			if(adCfg&&adCfg["default"]){
-				data.ad.push(adCfg["default"]);
-			}else{
-				data.ad.length=0;
-			}
-		}
-		if(!data.donate.length){ data.donate=[[]]; }
-		if(!data.ad.length){ data.ad=[[]]; }
-		sub.cons.donateData=data;
-		console.log(sub.cons.donateData);
-	})
-	.catch(function(){
-		sub.cons.donateData={donate:[[]],ad:[[]]};
-	});
-}
-getDonate();
-console.log("end")

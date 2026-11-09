@@ -14,26 +14,17 @@ Gesture definitions, action settings, and other preferences are stored in the br
 
 To carry out an action that the user configures and invokes, the extension may read the current tab's URL or title, a selected link or text, or an image URL. This information is processed to perform the requested action, such as opening a link, copying selected content, creating a bookmark, or navigating between tabs. The extension does not maintain a browsing-history profile or send browsing history to the developer.
 
-## Optional features and external requests
+## External websites
 
-Some optional features make network requests. The recipient of a request can receive ordinary connection information, such as the device's IP address and standard HTTP request metadata. The extension does not attach an account identifier to these requests.
-
-- **Short URL action:** When the user invokes this feature, the current page URL and the user-configured keyword are sent to the configured URL-shortening service. The default service is `url.zimoapps.com`; users may configure another service. The service processes the URL to return a shortened link and handles it under its own privacy terms.
-- **RSS reader:** The extension requests the feed URL configured by the user and reads the returned feed to display its entries. The feed provider receives the request in the same way as a normal web request.
-- **Image copying:** When the user invokes the image-copy action, the extension requests the selected image from its source so it can place the image on the clipboard. The image host receives that request.
-- **Homepage background:** If the user enables the related homepage feature, the extension requests public background-image information from Bing and may fetch the selected image from its image host.
-- **Optional content mini-apps:** Some mini-apps request public content from their configured or built-in providers, including `www.poxiao.com`. These requests retrieve content for display. A mini-app may also request a URL selected by the user.
-- **Donation and sponsor configuration:** The extension requests configuration from `apis.zimoapps.com` to determine whether donation or sponsor information is available. This request does not include the user's page URL or extension settings. If a sponsor page is displayed or opened, that third-party site may collect information according to its own privacy policy.
-
-User-facing actions such as shortening a URL, loading an RSS feed, or copying an image are initiated by the user. The donation and sponsor configuration request runs when the extension's background service starts. The extension does not send browsing information to build advertising profiles or sell user data.
+The extension does not make background requests to developer-operated or third-party content, shortening, advertising, or donation services. Some user-configured actions open websites in a browser tab, and the browser then connects directly to the selected site. User-authored scripts may also make network requests according to the code the user supplies. Those sites and scripts operate under their own privacy practices.
 
 ## Sharing and retention
 
-Information is shared with an external service only as described above and when the relevant feature is used or enabled. The extension developer does not receive a copy of locally stored settings or notes. Data retained by a third-party provider is governed by that provider's terms and privacy policy. Local extension data can be removed by clearing the extension's data or uninstalling the extension; browser-synced settings are also subject to the browser account's sync and deletion controls.
+The extension developer does not receive a copy of locally stored settings or notes. Websites opened by the user receive connection data directly from the browser and handle it under their own policies. Local extension data can be removed by clearing the extension's data or uninstalling the extension; browser-synced settings are also subject to the browser account's sync and deletion controls.
 
 ## Security
 
-Network requests made by the extension use HTTPS where supported by the configured service. Users should avoid sending sensitive URLs to a third-party URL-shortening service unless they trust that service.
+When opening websites, the extension uses the URL selected or configured by the user. Users should review destinations before opening them.
 
 ## Children's privacy
 
@@ -65,26 +56,17 @@ smartUp Relay 是一款浏览器扩展，用于用户自定义的鼠标手势、
 
 为了执行用户配置并主动触发的操作，扩展可能读取当前标签页的网址或标题、选中的链接或文本、图片网址等信息。这些信息用于完成相应操作，例如打开链接、复制选中内容、创建书签或切换标签页。扩展不会建立浏览历史画像，也不会将浏览历史发送给开发者。
 
-## 可选功能和外部请求
+## 外部网站
 
-部分可选功能会发起网络请求。请求接收方可能获得设备 IP 地址及标准 HTTP 请求元数据等常规连接信息。扩展不会在这些请求中附加用户账户标识。
-
-- **短网址动作：** 用户触发此功能时，当前页面 URL 和用户设置的关键词会发送到所配置的短网址服务。默认服务为 `url.zimoapps.com`，用户也可以设置其他服务。服务会处理该 URL 并返回短网址，其处理方式受该服务自身的隐私条款约束。
-- **RSS 阅读器：** 扩展请求用户配置的 RSS feed 地址，并读取返回内容以显示订阅条目。Feed 服务会像处理普通网页请求一样收到该请求。
-- **复制图片：** 用户触发图片复制动作时，扩展会从图片来源请求所选图片，以便将图片写入剪贴板。图片托管方会收到该请求。
-- **主页背景：** 用户启用相关主页功能后，扩展会向 Bing 请求公开的背景图片信息，并可能从图片托管方获取所选图片。
-- **可选内容迷你应用：** 部分迷你应用会从配置或内置的内容提供方请求公开内容，包括 `www.poxiao.com`。这些请求用于获取并显示内容；迷你应用也可能请求用户选择的网址。
-- **捐赠及赞助配置：** 扩展会向 `apis.zimoapps.com` 请求配置，以判断是否提供捐赠或赞助信息。该请求不包含用户当前页面 URL 或扩展设置。如果显示或打开赞助方页面，第三方网站可能根据其自身隐私政策收集信息。
-
-短网址、RSS 和复制图片等面向用户的操作由用户主动触发。捐赠及赞助配置请求会在扩展后台启动时发起。扩展不会发送浏览信息以建立广告画像，也不会出售用户数据。
+扩展不会在后台向开发者或第三方内容、短网址、广告、捐助服务发起请求。部分用户配置的操作会在浏览器标签页中打开网站，此时由浏览器直接连接用户选择的网站。用户编写的脚本也可能按其代码发起网络请求。这些网站和脚本受其各自的隐私实践约束。
 
 ## 信息共享和保留
 
-仅在上述功能被使用或启用时，扩展才会按说明向相关外部服务发送信息。扩展开发者不会收到本地保存的设置或笔记副本。第三方服务保留数据的方式受其自身条款和隐私政策约束。用户可以清除扩展数据或卸载扩展来删除本地扩展数据；浏览器同步的设置也受浏览器账户的同步和删除控制管理。
+扩展开发者不会收到本地保存的设置或笔记副本。用户打开的网站会直接从浏览器收到连接数据，并按其自身政策处理。用户可以清除扩展数据或卸载扩展来删除本地扩展数据；浏览器同步的设置也受浏览器账户的同步和删除控制管理。
 
 ## 安全
 
-扩展在服务支持的情况下使用 HTTPS 发起网络请求。向第三方短网址服务提交网址前，请确认信任该服务，避免提交敏感网址。
+打开网站时，扩展使用用户选择或配置的网址。请在打开前确认目标地址。
 
 ## 儿童隐私
 

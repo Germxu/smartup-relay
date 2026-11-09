@@ -17,7 +17,6 @@ sue.apps.homepage={
 				{type:"checkbox",label:"n_pin",name:"n_pin",checked:true},
 				{type:"checkbox",label:"n_closebox",name:"n_closebox",checked:true},
 				{type:"checkbox",label:"n_homepage_icon",name:"n_homepage_icon",checked:true},
-				{type:"checkbox",label:"n_homepage_bg",name:"n_homepage_bg",checked:true},
 				{type:"checkbox",label:"n_homepage_resize",name:"n_homepage_resize",checked:true},
 				{type:"checkbox",label:"n_homepage_last",name:"n_homepage_last",checked:true}
 			]
@@ -43,15 +42,8 @@ sue.apps.homepage={
 		}
 		sue.apps.homepage.listSwitch(dom,sue.apps.homepage.cons.curListId);
 
-		if(sue.apps.homepage.config.n_homepage_bg){
-			dom.querySelector(".su_head").style.background="none";
-			dom.querySelector(".su_main").style.cssText+="background:none;box-shadow:rgba(0,0,0,0.8) 0 0 5px;";
-			dom.style.cssText+="background-color:#8856fc;background-size:cover;border-color:rgba(252, 252, 252, 0);";
-			chrome.runtime.sendMessage({type:"appsAction",app:"homepage",action:"getImageURL"});
-		}else{
-			dom.style.cssText+="border-color:#8856fc;";
-			dom.querySelector(".su_head").style.cssText+="background-color:#8856fc;";
-		}
+		dom.style.cssText+="border-color:#8856fc;";
+		dom.querySelector(".su_head").style.cssText+="background-color:#8856fc;";
 		dom.addEventListener("click",this.handleEvent,false);
 	},
 	listInit:function(e){
@@ -348,7 +340,7 @@ sue.apps.homepage={
 			var _li=sue.apps.domCreate("li",{setName:["className"],setValue:["su_homepage_li su_homepage_item"]},null,null,{setName:["url","id"],setValue:[sites[id][i].url,i]});
 			var _div=sue.apps.domCreate("div",{setName:["className"],setValue:["su_homepage_item"]},null,null,{setName:["url","id"],setValue:[sites[id][i].url,i]});
 			if(sue.apps.homepage.config.n_homepage_icon){
-				var _img=sue.apps.domCreate("img",{setName:["className","src"],setValue:["su_homepage_item","https://www.google.com/s2/favicons?domain="+sites[id][i].url]},null,null,{setName:["url"],setValue:[sites[id][i].url]});
+				var _img=sue.apps.domCreate("img",{setName:["className","src"],setValue:["su_homepage_item",chrome.runtime.getURL("icon.png")]},null,null,{setName:["url"],setValue:[sites[id][i].url]});
 				_div.appendChild(_img);
 			}
 			var _span=sue.apps.domCreate("span",{setName:["className"],setValue:["su_homepage_item"]},null,null,{setName:["url","id"],setValue:[sites[id][i].url,i]},sites[id][i].title);

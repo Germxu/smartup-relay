@@ -76,24 +76,6 @@ var suo={
 			suo.initExclusion();
 			suo.initEnd();
 		},100)
-		// suo.welcome();
-		// suo.adInline();
-	},
-	adInline:()=>{
-		const inlineAd = suo.cons.donateData?.ad[0]?.find(ad => ad.type === "ad-inline" && !ad.on);
-		inlineAd && document.querySelector("#ad-inline")?.remove();
-	},
-	welcome:()=>{
-		const oninstallAd = suo.cons.reason!="install" || suo.cons.donateData?.ad[0]?.find(ad => ad.type === "ad-oninstall_popin" && !ad.on);
-		if (oninstallAd) return;
-
-		const dom=(suo.initAPPbox([],[800,230],"SmartUp has been installed successfully, and the following is an advertisement provided by the sponsor.","bg","showlist"));
-		const domMain=dom.querySelector(".box_main");
-			domMain.innerText="";
-
-		const domAd=suo.domCreate2("iframe",{setName:["src","width","height","iframeborder"],setValue:["https://www.usechatgpt.ai",window.innerWidth*0.8,window.innerHeight*0.8,"none"]});
-		domMain.appendChild(domAd);
-		suo.initPos(dom)
 	},
 	initNewAdded:()=>{
 		console.log("initNewAdded")
@@ -159,13 +141,6 @@ var suo={
 						break;
 					case"dca_keycusbox":
 						suo.dcaKeycus(e);
-						break;
-					case"donate_btn_close":
-					case"donate_btn_hide":
-						suo.donateBox.hideDonate(ele);
-						break;
-					case"donate_name":
-						suo.donateBox.showDonate();
 						break;
 					case"bgreset":
 						suo.bgReset(e);
@@ -263,15 +238,6 @@ var suo={
 				if(ele.classList.contains("box_tabtitle")&&!ele.classList.contains("box_tabtitleactive")){
 					suo.tabSwitch(e);
 				}
-				if(ele.classList.contains("donate_cctext")){
-					ele.select();
-				}
-				if(ele.classList.contains("donate_listli")){
-					suo.donateBox.switch(ele);
-				}
-				if(ele.classList.contains("donate_ccli")){
-					suo.donateBox.switchCcli(ele);
-				}
 				if(ele.classList.contains("menuplus_save")){
 					suo.saveConf2();
 				}
@@ -317,9 +283,6 @@ var suo={
 				}
 				if(ele.classList.contains("rate")||(ele.tagName.toLowerCase()!="html"&&ele.parentNode.classList.contains("rate"))){
 					chrome.tabs.create({url:suo.cons.webstoreURL})
-				}
-				if(ele.classList.contains("donate")||(ele.tagName.toLowerCase()!="html"&&ele.parentNode.classList.contains("donate"))){
-					suo.donateBox.showDonate();
 				}
 				if(ele.className&&e.target.classList.contains("menuli")){
 					suo.clickMenuLI(e);
@@ -1520,19 +1483,6 @@ var suo={
 		var confArray=getdata(ele).split("|");
 		var confOBJ=config;
 		//console.log(confArray);
-		//console.log(confOBJ);
-		//add ad support, config.about null
-		if(confArray[0]&&confArray[0]=="about"&&confArray[1]&&confArray[1]=="donatedev"){
-			if(!config.about){
-				config.about={};
-				config.about.donatedev={};
-				config.about.donatedev.ad=true;
-			}
-			if(!config.about.donatedev){
-				config.about.donatedev={};
-				config.about.donatedev.ad=true;
-			}
-		}
 		for(var i=0;i<confArray.length;i++){
 			confOBJ=confOBJ[confArray[i]];
 		}
@@ -3160,10 +3110,6 @@ var suo={
 			}
 		}):null
 
-		//init ads
-		if(!config.about||!config.about.donatedev||config.about.donatedev.ad){
-			suo.donateBox.init();
-		}
 	},
 	initBoxBtn:function(dom,btn){
 		var dombtn=dom.querySelectorAll(".box_submit input[type=button]");
@@ -3550,172 +3496,7 @@ var suo={
 			themediv.rel="stylesheet";
 		document.body.appendChild(themediv);
 		document.body.style.cssText+="background:#d0d9ff !important;"
-	},
-	donateBox:{
-		init:function(){
-			chrome.runtime.sendMessage({type:"getDonateData"},function(response){
-				if(chrome.runtime.lastError||!response){
-					suo.cons.donateData={donate:[[]],ad:[[]]};
-					return;
-				}
-				console.log(response.value);
-				suo.cons.donateData=response.value||{donate:[[]],ad:[[]]};
-				suo.donateBox.show();
-				suo.donateBox.dom(suo.cons.donateData);
-			})
-		},
-		dom:function(items){
-			items=items||{donate:[[]],ad:[[]]};
-			let domMain=document.querySelector("#donate_main"),
-				domList=document.querySelector("#donate_list"),
-				domContent=document.querySelector("#donate_content");
-			domList.textContent="";
-			domContent.textContent="";
-			let initDom=function(itemOBJ,id){
-				console.log(itemOBJ);
-				var _list=suo.domCreate2("li",{setName:["className","title"],setValue:["donate_listli",itemOBJ.name]},null,null,{setName:["id"],setValue:[id]},itemOBJ.name);
-				domList.appendChild(_list);
-				var _content=suo.domCreate2("div",{setName:["className"],setValue:["donate_contentlist"]},null,null,{setName:["id"],setValue:[id]});
-				switch(itemOBJ.type){
-					case"cryptocurrency":
-						console.log("cryptocurrency")
-						var _ccul=suo.domCreate2("ul",{setName:["className"],setValue:["donate_ccul"]});
-						// _ccul.appendChild(suo.domCreate2("span",null,null,null,null,"Network Type:"))
-						for(var i=0;i<itemOBJ.data.length;i++){
-							_ccul.appendChild(suo.domCreate2("li",{setName:["className"],setValue:["donate_ccli"]},null,null,{setName:["id"],setValue:[i]},itemOBJ.data[i].name));
-						}
-
-
-						var _ccdiv=suo.domCreate2("div",{setName:["className"],setValue:["donate_ccdiv"]});
-						for(var i=0;i<itemOBJ.data.length;i++){
-							var _cccontent=suo.domCreate2("div",{setName:["className"],setValue:["donate_cccontent"]},null,null,{setName:["id"],setValue:[i]});
-
-							_cccontent.appendChild(suo.domCreate2("textarea",{setName:["className","readOnly"],setValue:["donate_cctext",true]},null,null,{setName:["id"],setValue:[i]},itemOBJ.data[i].address));
-							var _ccqr=suo.domCreate2("div");
-							new QRCode(_ccqr,itemOBJ.data[i].address);
-							_cccontent.appendChild(_ccqr);
-
-							_ccdiv.appendChild(_cccontent);
-						}
-						
-						_content.appendChild(_ccul);
-						_content.appendChild(_ccdiv);
-						break;
-					case"text":
-						var _text=document.createElement("span");
-							_text.textContent=itemOBJ.text;
-						_content.appendChild(_text);	
-						break;
-					case"img":
-						var _img=document.createElement("img");
-							_img.src=itemOBJ.url;
-						_content.appendChild(_img);	
-						break;
-					case"link":
-						var _link=document.createElement("a");
-							_link.href=itemOBJ.url;
-							_link.target="_blank";
-							_link.textContent=itemOBJ.text;
-						_content.appendChild(_link);
-						break;
-					case"linkimg":
-						var _a=suo.domCreate2("a",{setName:["href","target"],setValue:[itemOBJ.url,"_blank"]});
-						var _img=suo.domCreate2("img",{setName:["src"],setValue:[itemOBJ.img]});
-						_a.appendChild(_img);
-						_content.appendChild(_a);
-						break;
-					case"qrcode":
-						console.log("qr")
-						var _qrcode=document.createElement("div");
-						new QRCode(_qrcode,itemOBJ.code);
-						_content.appendChild(_qrcode);
-						break;
-				}
-				domContent.appendChild(_content);
-				// return _list;
-			}
-			for(var i=0;items.donate&&items.donate[0]&&items.donate[0].length>0&&i<items.donate[0].length;i++){
-				initDom(items.donate[0][i],i);
-			}
-			let _flag=i;
-			for(var i=0;items.ad&&items.ad[0]&&items.ad[0].length>0&&i<items.ad[0].length;i++){
-				initDom(items.ad[0][i],_flag+i);
-			}
-			let firstDonate=document.querySelectorAll("#donate_list li")[0];
-			if(firstDonate){
-				suo.donateBox.switch(firstDonate);
-			}
-
-			//if cryptocurrency show the first one
-			if(items&&items.donate&&items.donate[0]&&items.donate[0][0]&&items.donate[0][0].type=="cryptocurrency"){
-				console.log("cc")
-				let firstCc=document.querySelector("#donate_content li.donate_ccli[data-id='0']");
-				firstCc&&suo.donateBox.switchCcli(firstCc)
-			}
-
-
-		},
-		switchCcli:function(dom){
-			console.log(dom)
-			let lists=document.querySelectorAll("#donate_main .donate_ccli"),
-				contents=document.querySelectorAll("#donate_main .donate_cccontent");
-
-			console.log(contents)
-			for(var i=0;i<lists.length;i++){
-				if(lists[i].classList.contains("donate_listcurrent")){
-					lists[i].classList.remove("donate_listcurrent");
-				}
-			}
-			dom.classList.add("donate_listcurrent");
-			for(var i=0;i<contents.length;i++){
-				if(contents[i].classList.contains("donate_contentcurrent")){
-					contents[i].classList.remove("donate_contentcurrent");
-				}
-			}
-			console.log(dom.dataset.id)
-			document.querySelector(".donate_ccdiv .donate_cccontent[data-id='"+dom.dataset.id+"']").classList.add("donate_contentcurrent");
-		},
-		switch:function(dom){
-			let lists=document.querySelectorAll("#donate_main #donate_list li"),
-				contents=document.querySelectorAll("#donate_main #donate_content .donate_contentlist");
-
-			console.log(contents)
-			for(var i=0;i<lists.length;i++){
-				if(lists[i].classList.contains("donate_listcurrent")){
-					lists[i].classList.remove("donate_listcurrent");
-				}
-			}
-			dom.classList.add("donate_listcurrent");
-			for(var i=0;i<contents.length;i++){
-				if(contents[i].classList.contains("donate_contentcurrent")){
-					contents[i].classList.remove("donate_contentcurrent");
-				}
-			}
-			console.log(dom.dataset.id)
-			document.querySelector(".donate_contentlist[data-id='"+dom.dataset.id+"']").classList.add("donate_contentcurrent");
-		},
-		show:function(){
-			document.querySelector("#menu_donate").style.cssText+="display:block;";
-		},
-		showDonate:function(){
-			document.querySelector("#donate_box").style.cssText+="display:block;";
-			document.querySelector("#donate_loading").style.cssText+="display:none;";
-			// domMain.style.cssText+="display:block;";
-			document.querySelector("#donate_main").style.cssText+="display:block;";
-			document.querySelector("#donate_btn_close").style.cssText+="display:block;";
-			// document.querySelector("#donate_btn_hide").style.cssText+="display:block;";
-		},
-		hideDonate:function(ele){
-			console.log(ele);
-			document.querySelector("#donate_btn_close").style.cssText+="display:none;";
-			// document.querySelector("#donate_btn_hide").style.cssText+="display:none;";
-			document.querySelector("#donate_main").style.cssText+="display:none;";
-			if(ele.id=="donate_btn_close"){
-				document.querySelector("#donate_box").style.cssText+="display:none;";
-			}
-		}
-	}
-}
+	},}
 chrome.runtime.sendMessage({type:"opt_getconf"},function(response){
 	if(chrome.runtime.lastError||!response){
 		return;
@@ -3725,7 +3506,6 @@ chrome.runtime.sendMessage({type:"opt_getconf"},function(response){
 	config=response.config;
 	suo.cons.os=response.os;
 	devMode=response.devMode;
-	suo.cons.donateData=response.donateData||{donate:[[]],ad:[[]]};
 	suo.cons.reason=response.reason;
 	suo.begin();
 })
